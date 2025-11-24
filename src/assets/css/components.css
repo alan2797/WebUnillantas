@@ -1,0 +1,28 @@
+.main-content-layout {
+    padding: 24px;
+    margin: 16px 16px 16px 0px;
+  }
+  .sidebar-content-layout {
+    margin: 16px 16px;
+  }
+  
+  @media (max-width: 768px) {
+    .main-content-layout {
+      padding: 15px;
+      margin: 5px 5px 5px 0px;
+    }
+    .sidebar-content-layout {
+      margin: 5px 5px;
+    }
+  }
+
+  :where(.css-dev-only-do-not-override-hkv4w3).ant-steps .ant-steps-item-title::after {
+    position: absolute;
+    top: calc(50%); /* línea siempre centrada verticalmente */
+    transform: translateY(-50%); /* ajusta el centro exacto */
+    inset-inline-start: 100%;
+    display: block;
+    width: 9999px;
+    height: 1px;
+    content: "";
+}

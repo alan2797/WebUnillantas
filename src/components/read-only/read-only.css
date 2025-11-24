@@ -1,0 +1,6 @@
+
+.readonly-field-container :where(.ant-form-item-label) {
+  padding: 0 !important;
+  margin-bottom: 0 !important; /* opcional */
+  line-height: 1.2; /* si querés compactarlo más */
+}

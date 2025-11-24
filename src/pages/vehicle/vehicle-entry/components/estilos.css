@@ -1,0 +1,61 @@
+.ingreso-card {
+  transition: box-shadow 0.3s;
+}
+
+.ingreso-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Iconos laterales - visibles por defecto en desktop */
+.side-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Iconos móviles - ocultos por defecto en desktop */
+.mobile-icons {
+  display: none;
+}
+
+.mobile-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.mobile-time {
+  font-size: 10px;
+  color: #888;
+}
+
+/* Media query para pantallas pequeñas (menor a 768px) */
+@media (max-width: 768px) {
+  /* Ocultar los iconos laterales */
+  .side-icon.left-icon,
+  .side-icon.right-icon {
+    display: none !important;
+  }
+
+  /* Mostrar los iconos móviles */
+  .mobile-icons {
+    display: flex !important;
+    gap: 150px;
+    margin-top: 12px;
+    justify-content: space-around;
+  }
+  .view-history {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* Media query para pantallas grandes (mayor a 768px) */
+@media (min-width: 769px) {
+  /* Ocultar los iconos móviles */
+  .mobile-icons {
+    display: none !important;
+  }
+}

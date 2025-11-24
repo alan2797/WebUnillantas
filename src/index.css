@@ -1,0 +1,42 @@
+@import "./assets/css/theme-custom.css";
+@import "./assets/css/components.css";
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --main-color: #FB3748;
+  --main-secondary-color: #151515;
+
+  
+}
+
+body {
+  margin: 0;
+}
+
+.border-color-primary{
+  border-color:var(--main-color)
+}
+
+.main-text{
+  color: var(--main-color);
+}
+
+.main-link{
+  color: var(--main-secondary-color);
+}
+
+.icon-wrapper {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 25px;
+}
+
+.icon-wrapper:hover {
+  background-color: rgb(236, 236, 236);
+  border-radius: 7px;
+}

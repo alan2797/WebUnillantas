@@ -1,0 +1,75 @@
+/* 🎨 Variables generadas por ThemeVariables (ya están en :root) */
+/* :root {
+  --color-primary: #006eb5;
+  --color-bg: #f5f5f5;
+  --font-size: 16px;
+  --border-radius: 6px;
+  --color-danger-antd: token.colorError
+  --color-info-antd: token.colorInfo
+  --color-success-antd: token.colorSuccess
+} */
+
+/* 🔹 Backgrounds */
+.bg-primary-antd {
+  background-color: var(--color-primary-antd) !important;
+}
+
+.bg-secondary-antd {
+  background-color: var(--color-bg-antd) !important;
+}
+
+.bg-error-antd {
+  background-color: var(--color-danger-antd) !important;
+}
+
+.bg-success-antd {
+  background-color: var(--color-success-antd) !important;
+}
+
+.bg-warning-antd {
+  background-color: var(--color-warning-antd) !important;
+}
+
+
+/* 🔹 Text colors */
+.text-primary-antd {
+  color: var(--color-primary-antd) !important;
+}
+
+.text-secondary-antd {
+  color: var(--color-bg-antd) !important;
+}
+
+/* 🔹 Borders */
+.border-primary-antd {
+  border: 2px solid var(--color-primary-antd) !important;
+  font-weight: 600;
+}
+
+/* 🔹 Buttons */
+.btn-primary-antd {
+  background-color: var(--color-primary-antd);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-antd);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary-antd:hover {
+  filter: brightness(0.9);
+}
+
+/* 🔹 Titles / Typography */
+.title-antd {
+  font-size: var(--font-size-antd);
+  font-weight: bold;
+  color: var(--color-primary-antd);
+}
+
+.subtitle-antd {
+  font-size: calc(var(--font-size-antd) * 0.875);
+  color: var(--color-primary-antd);
+  opacity: 0.8;
+}

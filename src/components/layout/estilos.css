@@ -1,0 +1,54 @@
+.custom-sider .ant-menu-item-divider {
+  border-top: 2px solid #000;
+  margin: 8px 15px;
+}
+.ant-layout-sider-collapsed .ant-menu-item-group-title {
+  display: none !important;
+  opacity: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+}
+.ant-layout-sider-collapsed .ant-menu-title-content {
+  display: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+.collapsed-sider,
+.collapsed-sider.ant-layout-sider,
+.collapsed-sider .ant-layout-sider-children {
+  background: #006eb5 !important;
+  border-radius: 5px;
+}
+
+/* Color de textos e iconos */
+.collapsed-sider .ant-menu-submenu-title,
+.collapsed-sider .ant-menu-item {
+  color: white !important;
+}
+
+.collapsed-sider .ant-menu-item-icon,
+.collapsed-sider .ant-menu-submenu-title .ant-menu-item-icon {
+  color: white !important;
+}
+
+/* Hover cuando está colapsado */
+.collapsed-sider .ant-menu-submenu-title:hover,
+.collapsed-sider .ant-menu-item:hover {
+  background: white !important;
+  color: #006eb5 !important;
+}
+
+.collapsed-sider .ant-menu-submenu-title:hover .ant-menu-item-icon,
+.collapsed-sider .ant-menu-item:hover .ant-menu-item-icon {
+  color: #006eb5 !important;
+}
+
+.collapsed-sider .menu-custom-sidebar {
+  background: #006eb5 !important;
+}
+.custom-sider:not(.collapsed-sider),
+.custom-sider.ant-layout-sider:not(.collapsed-sider) {
+  background: white !important;
+}
