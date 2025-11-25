@@ -6,17 +6,23 @@ export interface LoginRequestDto extends Record<string, unknown> {
   
 }
 
+export interface UserResponseDto {
+  id?: number;
+  username?: string;
+  role?: string;
+  divisionId?: number | string;
+  isTemporaryPassword?: boolean;
+}
+
+export interface TokenResponseDto {
+  accessToken?: string;
+  refreshToken?: string;
+  expiresIn?: number;
+}
+
 export interface LoginResponseDto {
-  success?: boolean;
-  requiresProfileSelection?: boolean;
-  requiresBranchSelection?: boolean;
-  requiresAreaSelection?: boolean;
-  requiresPositionSelection?: boolean;
-  token?: string;
-  requiresTempPasswordChange?: boolean;
-  canSelectOrganization?: boolean;
-  tempPassword?: string;
-  canSkipSelection?: boolean;
+  user?: UserResponseDto;
+  tokens?: TokenResponseDto;
 }
 
 export interface TokenPayload {

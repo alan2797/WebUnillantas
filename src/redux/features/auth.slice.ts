@@ -13,16 +13,16 @@ export interface AuthState {
   resetToken: string | null;
   error: string | null;
   loadingPermissions: boolean;
+  tempPassword?: string | null;
 }
 
 const initialState: AuthState = {
-  user: {
-    token: localStorageService.getToken() ?? "",
-  },
+  user: null,
   resetToken: null,
   token: localStorageService.getToken() ?? "",
   error: null,
-  loadingPermissions: false, // ✅ nuevo
+  loadingPermissions: false,
+  tempPassword: null
 };
 
 // 🔹 AsyncThunk para login
@@ -94,12 +94,12 @@ const authSlice = createSlice({
     },
     setTempPassword(state, action: PayloadAction<string>) {
       if (state.user) {
-        state.user.tempPassword = action.payload;
+        state.tempPassword = action.payload;
       }
     },
     clearTempPassword(state) {
       if (state.user) {
-        state.user.tempPassword = undefined;
+        state.tempPassword = undefined;
       }
     },
   },
@@ -107,9 +107,8 @@ const authSlice = createSlice({
     builder
       .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload.data;
-        state.token = action.payload.data.token;
-        state.resetToken = action.payload?.data?.resetToken;
-        localStorageService.setToken(action.payload.data.token);
+        state.token = action.payload.data.tokens.accessToken;
+        localStorageService.setToken(action.payload.data.tokens.accessToken);
       })
       
       .addCase(sessionConfirm.fulfilled, (state, action) => {

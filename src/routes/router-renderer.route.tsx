@@ -10,7 +10,7 @@ import Spinner from '../components/spinner/spinner.component';
 export const renderRoutes = (routes: RouteConfig[], isAuthenticated: boolean) => {
   return routes.map((route) => {
     const RouteComponent = route.component;
-    
+    console.log("routes renderer")
     if (route.isPrivate) {
       // Rutas privadas con layout
       if (route.layout === 'main') {
