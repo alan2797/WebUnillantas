@@ -19,9 +19,9 @@ const App: React.FC = () => {
   const token = useSelector((state: RootState) => state.auth.token);
   console.log(token);
   let isAuthenticated = !!token;
-/* 
+ 
   if (token) {
-    try {
+    /*try {
       const decoded = jwtDecode<TokenPayload>(token);
       if(decoded.isAdmin){
         isAuthenticated = true;
@@ -30,15 +30,17 @@ const App: React.FC = () => {
       }
     } catch (err) {
       isAuthenticated = false;
-    }
+    }*/
+    isAuthenticated = true;
   }
 
   useEffect(() => {
     if (isAuthenticated && token) {
-      handleRequestThunk(dispatch, () => dispatch(getPermissionsUser()).unwrap());
+      console.log("entro a apptsx")
+      //handleRequestThunk(dispatch, () => dispatch(getPermissionsUser()).unwrap());
       //dispatch(getPermissionsUser());
     }
-  }, [isAuthenticated, token, dispatch]); */
+  }, [isAuthenticated, token, dispatch]); 
 
   return (
     <Router basename={env.baseHref}>  
