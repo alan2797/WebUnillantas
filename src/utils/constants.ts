@@ -10,6 +10,7 @@ export const RoutePaths = {
   // Private routes
   HOME: "/",
   VEHICLE_ENTRY: "/vehicle-entry",
+  VEHICLE_ENTRY_CREATE: "/vehicle-entry-create",
 
   // Catch all
   NOT_FOUND: "*",

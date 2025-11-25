@@ -8,6 +8,8 @@ import type { FieldConfig } from '../../../interfaces/components.interface';
 import { buildDefaultValues } from '../../../validators/validations';
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import { useNavigate } from 'react-router-dom';
+import { RoutePaths } from '../../../utils/constants';
 
 
 
@@ -19,6 +21,7 @@ const VehicleEntry: React.FC = () => {
   const [openDropDown, setOpenDropDown] = useState(false);
   const [tempFilters, setTempFilters] = useState({dateRange: null as any, status: "all",});
   dayjs.extend(isBetween);
+  const navigate = useNavigate();
 
   const [ingresos, setIngresos] = useState<Ingreso[]>([
     {
@@ -126,8 +129,7 @@ const VehicleEntry: React.FC = () => {
 
 
   const handleNuevoIngreso = () => {
-    console.log('Nuevo ingreso');
-    // Aquí abres tu modal o navegas a formulario
+    navigate(RoutePaths.VEHICLE_ENTRY_CREATE);
   };
 
   const handleVerHistorial = (id: string) => {

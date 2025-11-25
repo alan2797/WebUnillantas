@@ -1,0 +1,94 @@
+.customGroup {
+  width: 100%;
+}
+
+.customOption {
+  margin: 4px 0;
+}
+
+.optionContent {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 6px;
+  /* transition: all 0.3s; */
+}
+/* 
+.optionContent:hover {
+  background-color: #e78300;
+} */
+
+.optionContent.checked {
+  /* background-color: #ffaa78; */
+  border: 1px solid #c50606;
+}
+
+/* Estilos para modo imagen */
+.imageOptionContainer {
+  margin: 2px;
+}
+
+/* .imageOption {
+  flex-direction: column;
+  text-align: center;
+  min-width: 80px;
+  padding: 12px 8px;
+} */
+.imageOption {
+  /* flex-direction: column; */
+  text-align: center;
+  min-width: 80px;
+  /* padding: 12px 8px; */
+  position: relative;
+}
+.optionImage {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  /* margin-bottom: 4px; */
+}
+
+/* Estilos para modo color */
+.colorOptionContainer {
+  margin: 4px;
+}
+
+.colorOption {
+  /* flex-direction: column; */
+  text-align: center;
+  min-width: 70px;
+  padding: 12px 8px;
+}
+
+.colorSwatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-bottom: 4px;
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.colorOption.checked .colorSwatch {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.optionLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+}
+
+.imageOption.checked .optionLabel,
+.colorOption.checked .optionLabel {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+/* Para modo texto normal */
+:global(.ant-radio-wrapper) .optionContent,
+:global(.ant-checkbox-wrapper) .optionContent {
+  padding: 4px 8px;
+}
