@@ -9,11 +9,7 @@ const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <Layout style={{ minHeight: "100vh" }}>
-       {/* <GlobalTopNavigation /> */}
-      {/* HEADER */}
       <HeaderBar />
-      {/* <Sidebar collapsed={collapsed} toggleCollapsed={() => setCollapsed(!collapsed)} /> */}
-      {/* CONTENT */}
       <Content
         style={{
           padding: 16,
