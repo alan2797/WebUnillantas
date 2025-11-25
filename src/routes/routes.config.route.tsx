@@ -9,7 +9,9 @@ const Login = lazy(() => import('../pages/login/login.page'));
 const HomePage = lazy(() => import('../pages/home/home.page'));
 const RecoveryAccount = lazy(() => import('../pages/recovery-account/recovery.page'));
 const ChangeTemporaryPassword = lazy(() => import('../pages/temporary-password/temporary-password.page'));
+
 const VehicleEntry = lazy(() => import('../pages/vehicle/vehicle-entry/vehicle-entry.page'));
+const VehicleEntryCreate = lazy(() => import('../pages/vehicle/vehicle-create/vehicle-entry-create.page'));
 
 
 
@@ -56,6 +58,13 @@ export const privateRoutes: RouteConfig[] = [
     isPrivate: true,
     layout: 'main',
     title: 'Entrada de Vehiculo'
+  },
+  {
+    path: RoutePaths.VEHICLE_ENTRY_CREATE,
+    component: VehicleEntryCreate,
+    isPrivate: true,
+    layout: 'main',
+    title: 'Crear Entrada del Vehiculo'
   },
   
 ];

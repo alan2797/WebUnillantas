@@ -1,23 +1,31 @@
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import HeaderBar from "./header-bar.component";
-import Sidebar from "./sidebar.component";
-import { useState } from "react";
+import { theme } from "antd";
 const { Content } = Layout;
 
-const MainLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+const MainLayout = ({ useWrapper = false }: { useWrapper?: boolean }) => {
+  const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <HeaderBar />
       <Content
-        style={{
-          padding: 16,
-          background: "#E8E8E8",
-          minHeight: "calc(100vh - 86px)", // 70 header + margin
-        }}
+        style={
+          useWrapper
+            ? {
+              margin: "16px",
+              padding: 16,
+              borderRadius: borderRadiusLG,
+              minHeight: "calc(100vh - 112px)",
+            }
+            : {
+                padding: 16,
+                background: "#E8E8E8",
+                minHeight: "calc(100vh - 86px)",
+              }
+        }
       >
-        <Outlet />
+         <Outlet />
       </Content>
 
     </Layout>

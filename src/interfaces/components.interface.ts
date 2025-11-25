@@ -107,6 +107,7 @@ export interface FieldConfig<T extends Record<string, unknown> = Record<string, 
   offset?:number; // para dar espaciado a los config(xs:22, offset:2)
   prefix?: React.ReactNode; // para colocar iconos a los input text al inicio
   suffix?: React.ReactNode; // para colocar iconos a los input text al final
+  displayMode?:"text" | "image" | "color"; // para los checkGroup
 
 }
 
@@ -175,10 +176,23 @@ export interface TableProps {
   scroll?: { x?: number | string; y?: number | string };
 }
 
-export interface Options {
+export interface BaseOption {
   value: string | number | boolean;
   label?: string;
 }
+export interface TextOption extends BaseOption {
+  // Solo tiene value y label (por defecto)
+}
+
+export interface ImageOption extends BaseOption {
+  image: string;
+}
+
+export interface ColorOption extends BaseOption {
+  color: string;
+}
+
+export type Options = TextOption | ImageOption | ColorOption;
 
 export interface SelectMenuConfigProps {
   placeholder?: string;
