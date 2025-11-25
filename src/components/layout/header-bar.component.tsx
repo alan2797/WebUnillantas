@@ -1,25 +1,10 @@
 import React, { useState } from 'react';
-import { Dropdown, theme, Tabs } from 'antd';
+import { Dropdown, theme, Tabs, Divider, Button, Badge, Input } from 'antd';
 import type { TabsProps } from 'antd';
 import { 
+  BellOutlined,
   DownOutlined, 
-  LogoutOutlined, 
-  DashboardOutlined,
-  AppstoreOutlined,
-  ShoppingCartOutlined,
-  BarChartOutlined,
-  TeamOutlined,
-  ProductOutlined,
-  FolderOutlined,
-  DatabaseOutlined,
-  TruckOutlined,
-  FileTextOutlined,
-  UserOutlined,
-  LineChartOutlined,
-  PieChartOutlined,
-  ShopOutlined,
-  DollarOutlined,
-  ContainerOutlined
+  LogoutOutlined
 } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +12,12 @@ import { logout } from '../../redux/features/auth.slice';
 import { env } from '../../config/env';
 
 import styles from './HeaderBar.module.css';
+import { filterMenuByPermissions, mapToAntdItems } from '../../utils/filter-menu-permissions';
+import { menuItems } from './menu-items';
+import type { AppMenuItem } from '../../interfaces/routes.interface';
+
+
+const { Search } = Input;
 
 const HeaderBar = () => {
   const {
@@ -37,9 +28,42 @@ const HeaderBar = () => {
   const navigate = useNavigate();
 
   // Estados para el menú activo y submenús
-  const [activeMainMenu, setActiveMainMenu] = useState<string>('dashboard');
-  const [activeSubMenu, setActiveSubMenu] = useState<string>('dashboard-main');
-  const [showSubNavigation, setShowSubNavigation] = useState<boolean>(true);
+  const [activeMainMenu, setActiveMainMenu] = useState<string>('');
+  const [activeSubMenu, setActiveSubMenu] = useState<string>('');
+  const [showSubNavigation, setShowSubNavigation] = useState<boolean>(false);
+
+  // Filtrar menús por permisos (puedes pasar los permisos reales aquí)
+  const filteredMenu = filterMenuByPermissions(menuItems, []);
+  
+  // Función para extraer solo los items principales del menú
+  const getMainMenuItems = (): AppMenuItem[] => {
+    const mainItems: AppMenuItem[] = [];
+    
+    menuItems.forEach(item => {
+      if (item.type === 'group' && item.children) {
+        // Para grupos, tomar los hijos como items principales
+        item.children.forEach(child => {
+          if (child.children) {
+            // Item con submenú
+            mainItems.push({
+              ...child,
+              key: child.key as string
+            });
+          } else {
+            // Item simple
+            mainItems.push(child);
+          }
+        });
+      } else if (!item.type) {
+        // Items directos (no grupos)
+        mainItems.push(item);
+      }
+    });
+    
+    return mainItems;
+  };
+
+  const mainMenuItems = getMainMenuItems();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -63,125 +87,6 @@ const HeaderBar = () => {
     ],
   };
 
-  // Estructura de menús principales con sus subitems e iconos
-  const mainMenuItems = [
-    {
-      key: 'dashboard',
-      label: 'Dashboard',
-      icon: <DashboardOutlined />,
-      subItems: [
-        { 
-          key: 'dashboard-main', 
-          label: 'Principal', 
-          icon: <DashboardOutlined /> 
-        },
-        { 
-          key: 'dashboard-analytics', 
-          label: 'Analíticas', 
-          icon: <LineChartOutlined /> 
-        },
-        { 
-          key: 'dashboard-reports', 
-          label: 'Reportes', 
-          icon: <PieChartOutlined /> 
-        },
-      ]
-    },
-    {
-      key: 'inventory',
-      label: 'Inventario',
-      icon: <AppstoreOutlined />,
-      subItems: [
-        { 
-          key: 'inventory-products', 
-          label: 'Productos', 
-          icon: <ProductOutlined /> 
-        },
-        { 
-          key: 'inventory-categories', 
-          label: 'Categorías', 
-          icon: <FolderOutlined /> 
-        },
-        { 
-          key: 'inventory-stock', 
-          label: 'Stock', 
-          icon: <DatabaseOutlined /> 
-        },
-        { 
-          key: 'inventory-suppliers', 
-          label: 'Proveedores', 
-          icon: <TruckOutlined /> 
-        },
-      ]
-    },
-    {
-      key: 'sales',
-      label: 'Ventas',
-      icon: <ShoppingCartOutlined />,
-      subItems: [
-        { 
-          key: 'sales-orders', 
-          label: 'Pedidos', 
-          icon: <FileTextOutlined /> 
-        },
-        { 
-          key: 'sales-customers', 
-          label: 'Clientes', 
-          icon: <UserOutlined /> 
-        },
-        { 
-          key: 'sales-invoices', 
-          label: 'Facturas', 
-          icon: <DollarOutlined /> 
-        },
-        { 
-          key: 'sales-returns', 
-          label: 'Devoluciones', 
-          icon: <ContainerOutlined /> 
-        },
-      ]
-    },
-    {
-      key: 'reports',
-      label: 'Reportes',
-      icon: <BarChartOutlined />,
-      subItems: [
-        { 
-          key: 'reports-financial', 
-          label: 'Financieros', 
-          icon: <DollarOutlined /> 
-        },
-        { 
-          key: 'reports-sales', 
-          label: 'Ventas', 
-          icon: <ShoppingCartOutlined /> 
-        },
-        { 
-          key: 'reports-inventory', 
-          label: 'Inventario', 
-          icon: <AppstoreOutlined /> 
-        },
-      ]
-    },
-    {
-      key: 'users',
-      label: 'Usuarios',
-      icon: <TeamOutlined />,
-      subItems: [
-        { 
-          key: 'users-list', 
-          label: 'Lista de Usuarios', 
-          icon: <UserOutlined /> 
-        },
-        { 
-          key: 'users-roles', 
-          label: 'Roles', 
-          icon: <TeamOutlined /> 
-        },
-      ]
-    },
-  ];
-
   const handleMainMenuClick = (key: string) => {
     const menuItem = mainMenuItems.find(item => item.key === key);
     
@@ -189,12 +94,16 @@ const HeaderBar = () => {
       setActiveMainMenu(key);
       
       // Si el menú tiene subitems, mostrar la barra de tabs
-      if (menuItem.subItems && menuItem.subItems.length > 0) {
+      if (menuItem.children && menuItem.children.length > 0) {
         setShowSubNavigation(true);
         // Seleccionar el primer subitem por defecto
-        setActiveSubMenu(menuItem.subItems[0].key);
+        setActiveSubMenu(menuItem.children[0].key as string);
       } else {
         setShowSubNavigation(false);
+        // Si no tiene subitems, navegar directamente
+        if (key !== '/logout') {
+          navigate(key);
+        }
       }
       
       console.log('Navegando a menú:', key);
@@ -203,25 +112,48 @@ const HeaderBar = () => {
 
   const handleSubMenuClick = (key: string) => {
     setActiveSubMenu(key);
+    if (key === '/logout') {
+      dispatch(logout());
+      navigate('/login');
+    } else {
+      navigate(key);
+    }
     console.log('Navegando a submenú:', key);
   };
 
   // Obtener los subitems del menú activo para las tabs
   const getActiveSubItems = () => {
     const activeMenu = mainMenuItems.find(item => item.key === activeMainMenu);
-    return activeMenu?.subItems || [];
+    return activeMenu?.children || [];
   };
 
   // Configurar las tabs con iconos
-  const tabItems: TabsProps['items'] = getActiveSubItems().map(subItem => ({
-    key: subItem.key,
+  /* const tabItems: TabsProps['items'] = getActiveSubItems().map(subItem => ({
+    key: subItem.key as string,
     label: (
       <div className={styles.tabLabel}>
         {subItem.icon}
         <span>{subItem.label}</span>
       </div>
     ),
-  }));
+  })); */
+  const tabItems: TabsProps['items'] = getActiveSubItems().map((subItem, index, arr) => ({
+  key: subItem.key as string,
+  label: (
+    <div className={styles.tabLabelWithDivider}>
+      <div className={styles.tabLabel}>
+        {subItem.icon}
+        <span>{subItem.label}</span>
+         <Divider type='vertical' style={{ margin:"0 10px"}}/>
+      </div>
+           
+
+      {/* Divider vertical entre items excepto el último */}
+      {/* {index !== arr.length - 1 && <div className={styles.vDivider} />} */}
+    </div>
+  ),
+}));
+
 
   return (
     <div className={styles.headerContainer}>
@@ -236,25 +168,27 @@ const HeaderBar = () => {
             className={styles.logo}
           />
           <span className={styles.company}>UNILLANTAS</span>
-        </div>
+        </div>         
 
         {/* CENTRO - Navegación Principal */}
         <div className={styles.center}>
+          <Search
+            placeholder="Buscar..."
+            style={{ width: 200, marginRight: 16 }}
+            allowClear
+          />
           <div className={styles.mainNavigation}>
             {mainMenuItems.map(item => (
               <div
-                key={item.key}
+                key={item.key as string}
                 className={`${styles.menuItem} ${
-                  activeMainMenu === item.key ? styles.menuItemActive : ''
+                  activeMainMenu === item.key ? styles.menuItemActive : 'asds'
                 }`}
-                onClick={() => handleMainMenuClick(item.key)}
+                onClick={() => handleMainMenuClick(item.key as string)}
               >
                 <div className={styles.menuItemContent}>
                   {item.icon}
                   <span>{item.label}</span>
-                 {/*  {item.subItems && item.subItems.length > 0 && (
-                    <DownOutlined className={styles.dropdownArrow} />
-                  )} */}
                 </div>
               </div>
             ))}
@@ -275,7 +209,6 @@ const HeaderBar = () => {
                 <span className={styles.userName}>René Ruiz</span>
                 <span className={styles.userEmail}>rene.ruiz@unillantas.com</span>
               </div>
-
               <DownOutlined className={styles.arrow} />
             </div>
           </Dropdown>
@@ -294,6 +227,7 @@ const HeaderBar = () => {
               size="small"
               className={styles.subTabs}
             />
+            <Divider type='vertical'/>
           </div>
         </div>
       )}

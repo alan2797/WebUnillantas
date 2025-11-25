@@ -26,7 +26,8 @@ const Sidebar = ({ collapsed, toggleCollapsed }: SidebarProps) => {
   const dispatch = useDispatch<AppDispatch>();
   //const permissionsState = useSelector((state: RootState) => state.auth.permissions);
   const filteredMenu = filterMenuByPermissions(menuItems, []);
-  const antdItems = mapToAntdItems(filteredMenu);  return (
+  const antdItems = mapToAntdItems(filteredMenu);
+  return (
     <Sider
       trigger={null}
       collapsible

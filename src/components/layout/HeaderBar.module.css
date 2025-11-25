@@ -16,7 +16,7 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-/* IZQUIERDA - Logo */
+/* IZQUIERDA - LOGO */
 .left {
   display: flex;
   align-items: center;
@@ -32,10 +32,10 @@
 .company {
   font-size: 18px;
   font-weight: bold;
-  color: #1890ff;
+  color: #000000;
 }
 
-/* CENTRO - Navegación Principal */
+/*================================= CENTRO - NAVEGACION PRINCIPAL ============================== */
 .center {
   display: flex;
   justify-content: center;
@@ -54,18 +54,24 @@
   cursor: pointer;
   transition: all 0.3s;
   border-bottom: 2px solid transparent;
+  font-weight: 400;
   white-space: nowrap;
+  font-size: 16px;
+  color: #EC0127;
+  border-radius:5px;
 }
 
 .menuItem:hover {
-  background-color: #f5f5f5;
-  color: #1890ff;
+  background-color: #EC01271A;
+  color: #EC0127;
+  /* border-radius: 7px; */
 }
 
 .menuItemActive {
-  background-color: #f0f8ff;
-  color: #1890ff;
-  border-bottom: 2px solid #1890ff;
+  background-color: #EC01271A;
+  /* color: #EC0127; */
+  /* border-radius: 5px; */
+  /* border-bottom: 2px solid #EC0127; */
 }
 
 .menuItemContent {
@@ -75,27 +81,18 @@
   padding: 12px 16px;
   border-radius: 6px 6px 0 0;
   font-weight: 500;
-  color: #333;
+  /* color: #c40505; */
 }
 
 .menuItem:hover .menuItemContent {
-  color: #1890ff;
+   color: #EC0127;
 }
 
 .menuItemActive .menuItemContent {
-  color: #1890ff;
+  color: #EC0127;
 }
 
-.dropdownArrow {
-  font-size: 12px;
-  color: #666;
-  transition: transform 0.3s;
-}
 
-.menuItemActive .dropdownArrow {
-  color: #1890ff;
-  transform: rotate(180deg);
-}
 
 /* DERECHA - Usuario */
 .right {
@@ -144,27 +141,30 @@
   color: #666;
 }
 
-/* Sub Navegación (Tabs) - Centrada con iconos */
+/* ===================== SUB MODULOS(Tabs) - CENTRADA CON ICONOS */
 .subNavigation {
-  background: #fafafa;
-  border-bottom: 1px solid #f0f0f0;
+  background: white;
+  /* border-bottom: 1px solid #f0f0f000; */
   padding: 0;
   display: flex;
   justify-content: center;
+  font-weight: 500;
+  
 }
 
 .subNavigationCenter {
   display: flex;
   justify-content: center;
   width: 100%;
-  max-width: 800px;
+  /* max-width: 800px; */
 }
 
 .subTabs {
-  margin: 0;
+  margin: 2px 0;
   width: 100%;
   display: flex;
   justify-content: center;
+  
 }
 
 .subTabs :global(.ant-tabs-nav) {
@@ -182,33 +182,124 @@
   display: flex;
   justify-content: center;
   gap: 4px;
+  border: none;
+  color: red !important;
 }
 
 .subTabs :global(.ant-tabs-tab) {
-  padding: 8px 16px;
+  padding: 0px 0px;
   background: transparent;
-  border: none;
-  border-radius: 0;
-  text-align: center;
+  /* border: none; */
+  /* text-align: center; */
+  border: none !important;
 }
 
-.subTabs :global(.ant-tabs-tab-active) {
-  background: #fff;
-  border-bottom: 2px solid #1890ff;
+/* .subTabs :global(.ant-tabs-tab-active) {
+  background: #b90c0c;
+  border-bottom: 25px solid #02c54d;
+  
 }
 
 .subTabs :global(.ant-tabs-ink-bar) {
-  background: #1890ff;
-}
+  background: #00f514;
+  
+} */
 
-/* Estilos para los labels de las tabs con iconos */
-.tabLabel {
+
+
+/* ESTILOS PARA LOS LABELS DE LOS TABS CON ICONOS */
+/* .tabLabel {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  padding: 10px;
+  font-size: 18px;
+  justify-content: center;
+  
 }
 
 .tabLabel :global(.anticon) {
   font-size: 14px;
+}
+
+.tabLabelWithDivider {
+  display: flex;
+  align-items: center;
+}
+
+.tabLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+} */
+
+/* .vDivider {
+  width: 1px;
+  height: 30px;
+  background: #d9d9d9;
+  margin-left: 35px;
+} */
+
+
+
+
+
+
+
+
+
+/* Hover del tab */
+/* .subTabs :global(.ant-tabs-tab:hover) {
+  background-color: #EC01271A !important; 
+} */
+
+/* Hover: texto rojo */
+/* .subTabs :global(.ant-tabs-tab:hover .ant-tabs-tab-btn) {
+  color: #EC0127 !important;
+}
+ */
+/* .tabLabel:hover {
+color: #EC0127 !important;
+} */
+
+
+
+
+/* Quitar bordes del contenedor */
+.subTabs :global(.ant-tabs-nav) {
+  border: none !important;
+}
+
+/* Estilo base de cada tab */
+.subTabs :global(.ant-tabs-tab) {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease;
+}
+
+/* Texto de tabs inactivos → rojo */
+.subTabs :global(.ant-tabs-tab .ant-tabs-tab-btn) {
+  color: #EC0127 !important;
+}
+
+/* Hover → mismo estilo del activo */
+.subTabs :global(.ant-tabs-tab:hover) {
+  background-color: #EC01271A !important;
+}
+
+
+/* Hover: texto también rojo */
+/* .subTabs :global(.ant-tabs-tab:hover .ant-tabs-tab-btn) {
+  color: #EC0127 !important;
+} */
+
+/* Texto del activo → rojo */
+.subTabs :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+  color: #EC0127 !important;
+}
+
+/* Quitar ink bar */
+.subTabs :global(.ant-tabs-ink-bar) {
+  background: transparent !important;
 }
