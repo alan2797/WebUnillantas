@@ -14,7 +14,7 @@ export const configForm = (): FieldConfig<ChangePasswordRequestDto>[] => [
     xs: 24,
   },
   {
-    key: "confirmPassword",
+    key: "confirmNewPassword",
     type: "password",
     typeValue: "string",
     label: "Confirma Nueva Contraseña",

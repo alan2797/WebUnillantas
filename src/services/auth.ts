@@ -6,6 +6,7 @@ import type {
   LoginRequestDto,
 } from "../interfaces/login.interface";
 import api from "./api";
+import { apiPublic } from "./api-public";
 
 export const authService = async (data: LoginRequestDto) => {
   const res = await api.post("/auth/login", data);
@@ -27,8 +28,15 @@ export const forgotPasswordService = async (data: ForgotPasswordRequestDto) => {
   return res;
 };
 
-export const changePasswordTempService = async (data: ChangePasswordRequestDto, resetToken: string) => {
-  const res = await api.post("/auth/change-temp-password?token=" + resetToken, data);
+export const changePasswordTempService = async (data: ChangePasswordRequestDto, token: string) => {
+  const res = await apiPublic.post("/auth/change-password", data,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
   return res;
 };
 

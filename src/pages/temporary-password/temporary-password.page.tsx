@@ -1,34 +1,41 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Button } from "antd";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import type { FieldConfig } from "../../interfaces/components.interface";
+import type { ApiResponse, FieldConfig } from "../../interfaces/components.interface";
 import { generateZodSchema } from "../../validators/validations";
-import type { LoginRequestDto } from "../../interfaces/login.interface";
+import type { ChangePasswordDto, ChangePasswordRequestDto, LoginRequestDto } from "../../interfaces/login.interface";
 import { useNavigate } from "react-router-dom";
 import { FormField } from "../../components/form-field/form-field.component";
 import { RoutePaths } from "../../utils/constants";
 import AuthLayout from "../../components/layout/auth-layout/auth.layout";
 import { usePasswordValidation } from "./utils/usePasswordValidation";
 import { configForm } from "./temporary-password.config";
+import { handleRequestThunk } from "../../utils/handle-request-thunk";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../redux/store";
+import { changePassword } from "../../redux/features/auth.slice";
 
 const ChangeTemporaryPassword: React.FC = () => {
-  const configFormSchema: FieldConfig<LoginRequestDto>[] = configForm();
-  const loginSchema = generateZodSchema<LoginRequestDto>(configFormSchema);
+  const configFormSchema: FieldConfig<ChangePasswordRequestDto>[] = configForm();
+  const loginSchema = generateZodSchema<ChangePasswordRequestDto>(configFormSchema);
 
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginRequestDto>({
+  } = useForm<ChangePasswordRequestDto>({
     resolver: zodResolver(loginSchema),
-    defaultValues: configFormSchema.reduce((acc, field) => ({ ...acc, [field.key]: field.valueInitial }), {} as LoginRequestDto),
+    defaultValues: configFormSchema.reduce((acc, field) => ({ ...acc, [field.key]: field.valueInitial }), {} as ChangePasswordRequestDto),
     mode: "onChange",
     criteriaMode: "all",
   });
 
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const tempPassword = useSelector((state: RootState) => state.auth.tempPassword);
+  const tempToken = useSelector((state: RootState) => state.auth.tempToken);
 
   const passwordValue = useWatch({
     control,
@@ -44,16 +51,32 @@ const ChangeTemporaryPassword: React.FC = () => {
 
   const { validations: passwordValidations, isValid: isPasswordValid } = usePasswordValidation(passwordValue, passwordConfirm);
 
-  const onSubmit = (data: LoginRequestDto) => {
+  useEffect(() => {
+    if (!tempPassword) navigate(RoutePaths.LOGIN);
+  }, [tempPassword, navigate]);
+
+  const onSubmit = async(data: ChangePasswordRequestDto) => {
     console.log(data);
-    navigate(RoutePaths.HOME);
+    //navigate(RoutePaths.HOME);
+    data.oldPassword = tempPassword ?? "";
+    let body: ChangePasswordDto = {
+      password: data,
+      token: tempToken ?? ""
+    }
+    const result: ApiResponse<boolean> | null = await handleRequestThunk(dispatch, () => dispatch(changePassword(body)).unwrap(), {
+      showSpinner: true,
+      showMessageApi: true
+    });
+    if(result?.success){
+      navigate(RoutePaths.HOME);
+    }
   };
 
   return (
     <AuthLayout title="Nueva Contraseña" variant="change-password">
       <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
         {configFormSchema.map((field) => (
-          <FormField key={String(field.key)} fieldConfig={field} control={control} error={errors[field.key as keyof LoginRequestDto]} />
+          <FormField key={String(field.key)} fieldConfig={field} control={control} error={errors[field.key as keyof ChangePasswordRequestDto]} />
         ))}
         {(() => {
           const strength = passwordValidations.filter((v) => v.type !== "match" && v.isValid).length;
@@ -108,7 +131,7 @@ const ChangeTemporaryPassword: React.FC = () => {
           </div>
         }
 
-        <Button type="primary" htmlType="submit" block size="large" loading={isSubmitting}>
+        <Button type="primary" htmlType="submit" block size="large" loading={isSubmitting} disabled={!!passwordValidations.find(item => item.isValid == false)}>
           Cambiar Contraseña
         </Button>
       </Form>

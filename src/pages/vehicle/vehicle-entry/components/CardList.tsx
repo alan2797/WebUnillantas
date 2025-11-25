@@ -104,11 +104,13 @@ export const CardList: React.FC<IngresoCardProps> = ({
       <Divider className='my-0 mt-4' style={{borderTopWidth:2}}/>
       {/* Botón Ver Historial */}
       <Button 
-        type="link" 
+        type="text"
+        color='danger'
+        variant='filled' 
         icon={<IconTimelineEvent size={20} fontWeight={"bolder"} />} 
         onClick={onVerHistorial}
         className='view-history'
-        style={{ marginTop: 12, padding: 0, color: '#ff4d4f', fontWeight:"bold" }}
+        style={{ marginTop: 12, padding: 10, color: '#ff4d4f', fontWeight:"bold" }}
       >
         Ver Historial
       </Button>
