@@ -108,6 +108,7 @@ export interface FieldConfig<T extends Record<string, unknown> = Record<string, 
   prefix?: React.ReactNode; // para colocar iconos a los input text al inicio
   suffix?: React.ReactNode; // para colocar iconos a los input text al final
   displayMode?:"text" | "image" | "color"; // para los checkGroup
+  direction?: "horizontal" | "vertical"
 
 }
 
@@ -297,6 +298,7 @@ export interface ModalFormProps {
 
   /** Título personalizable */
   title?: string;
+  description?:string;
   width?: number;
 
   maxHeight?: string;

@@ -55,14 +55,14 @@ export const privateRoutes: RouteConfig[] = [
   {
     path: RoutePaths.VEHICLE_ENTRY,
     component: VehicleEntry,
-    isPrivate: true,
+    isPrivate: false,
     layout: 'main',
     title: 'Entrada de Vehiculo'
   },
   {
     path: RoutePaths.VEHICLE_ENTRY_CREATE,
     component: VehicleEntryCreate,
-    isPrivate: true,
+    isPrivate: false,
     layout: 'main',
     title: 'Crear Entrada del Vehiculo'
   },

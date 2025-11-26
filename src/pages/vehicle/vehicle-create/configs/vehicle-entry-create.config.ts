@@ -12,7 +12,9 @@ export const configForm= (): FieldConfig<VehicleEntryCreate>[] => [
         valueInitial: "",
         options:[],
         typeValue: "string",
-        xs: 8,
+        xs: 24,
+        md:8
+
     },
     {
         key: "licencePlateNumber",
@@ -20,16 +22,18 @@ export const configForm= (): FieldConfig<VehicleEntryCreate>[] => [
         typeValue: "string",
         label: "Placa",
         valueInitial: "",
-        xs: 8,
+        xs: 24,
+        md:8
     },
     {
         key:"entryTime",
         type:"timer",
         label:"Hora Ingreso",
         valueInitial:moment(),
-        typeValue:"string",
+        typeValue:"date",
         disabled:true,
-        xs:8
+        xs:24,
+        md:8
     },
     {
         key:"currentVehicleOwner",
@@ -37,58 +41,61 @@ export const configForm= (): FieldConfig<VehicleEntryCreate>[] => [
         label:"Dueño Actual del Vehiculo",
         valueInitial:"",
         typeValue:"string",
-        xs:8,
+        xs:24,
+        md:8
     },
     {
         key:"vehicleYear",
-        type:"text",
+        type:"select",
         label:"Año",
+        options:[],
         valueInitial:"",
         typeValue:"string",
-        xs:8,
+        xs:24,
+        md:8
     },
     {
         key:"vehicleType",
-        type:"text",
+        type:"select",
         label:"Tipo de Vehiculo",
+        options:[],
         valueInitial:"",
         typeValue:"string",
-        xs:8,
+        xs:24,
+        md:8
     },
+]
 
+
+export const configForm2= (): FieldConfig<VehicleEntryCreate>[] => [
 {
-  key: "vehicleBrand",
+  key: "visitReason",
   type: "checkbox",
-  label: "Marca",
+  label: "Motivo de Visita",
   valueInitial: '',
   typeValue: "string",
-  displayMode: "image",
   singleSelect: true,
+  direction:"horizontal",
   xs: 24,
   options: [
-    { value: "kia", label: "KIA", image: "https://logo.clearbit.com/suzuki.fr" },
-    { value: "toyota", label: "TOYOTA", image: "https://logo.clearbit.com/toyotacomauto.com" },
-    { value: "chery", label: "CHERY", image: "https://logo.clearbit.com/chery.cn" },
-    { value: "chery22", label: "CHERY", image: "https://logo.clearbit.com/chery.cn" },
-    { value: "chery3", label: "CHERY", image: "https://logo.clearbit.com/chery.cn" },
+    { value: "llanta", label: "Llanta"},
+    { value: "servicio", label: "Servicio"},
+    { value: "ambos", label: "Ambos"},
   ],
 },
 {
-  key: "vehicleColor", 
+  key: "orderType", 
   type: "checkbox",
-  label: "Color",
+  label: "Pedido",
   valueInitial: '',
-  typeValue: "string", 
-  displayMode: "color",
+  typeValue: "string",
   singleSelect: true,
+  direction:"horizontal",
   xs: 24,
   options: [
-    { value: "azul", label: "Azul", color: "#4A90E2" },
-    { value: "rojo", label: "Rojo", color: "red" },
-    { value: "amarillo", label: "Amarillo", color: "yellow" },
-    { value: "verde", label: "Verde", color: "green" },
-    { value: "rosado", label: "Rosado", color: "pink" },
+    { value: "1", label: "Instalacion en Sucursal"},
+    { value: "2", label: "Para Llevar"},
+    { value: "3", label: "Despacho"},
   ],
 },
 ]
-

@@ -11,9 +11,9 @@ export interface VehicleEntryCreate extends Record<string, unknown> {
     currentVehicleOwner?:string;
     vehicleYear?:string;
     vehicleType?:string;
-    vechicleBrand?:string[];
+    vechicleBrand?:string;
     vehicleModel?:string
-    vechicleColor?:string[];
+    vechicleColor?:string;
     visitReason?:string;
     orderType?:string;
 }

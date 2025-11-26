@@ -25,6 +25,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
   footerButtons = [],
   showFooter = true,
   title,
+  description,
   maxHeight = "65vh"
 }) => {
   return (
@@ -40,15 +41,15 @@ const ModalForm: React.FC<ModalFormProps> = ({
         mask: { backdropFilter: "blur(2px)" },
         content: {
           position: "relative",
-          border: "3px solid #1890ff",
+          // border: "3px solid #1890ff",
           borderRadius: 16,
           padding: "32px 32px",
           background: "#fff",
         },
       }}
     >
-      {/* 🔹 Botón de cierre */}
-      <Button
+
+     {/*  <Button
         type="text"
         onClick={onClose}
         aria-label="Cerrar"
@@ -69,7 +70,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
           zIndex: 20,
         }}
         icon={<CloseOutlined style={{ color: "#ff4d4f", fontSize: 14 }} />}
-      />
+      /> */}
 
       {/* 🔹 Icono o imagen superior */}
      {(imageSrc || icon) && (
@@ -116,7 +117,12 @@ const ModalForm: React.FC<ModalFormProps> = ({
       >
         {title}
       </Title>
-
+      <p style={{
+          textAlign: "center",
+          marginTop: 12,
+          marginBottom: 16,
+          color: "#000",
+        }}>{description}</p>
       <Divider style={{ margin: "16px 0" }} />
 
       {/* 🔹 Contenido dinámico */}

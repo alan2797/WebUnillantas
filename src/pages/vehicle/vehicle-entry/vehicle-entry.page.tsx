@@ -22,7 +22,6 @@ const VehicleEntry: React.FC = () => {
   const [tempFilters, setTempFilters] = useState({dateRange: null as any, status: "all",});
   dayjs.extend(isBetween);
   const navigate = useNavigate();
-
   const [ingresos, setIngresos] = useState<Ingreso[]>([
     {
       id: '1',
@@ -109,7 +108,7 @@ const VehicleEntry: React.FC = () => {
       Aplicar filtros
     </Button>
   </div>
-);
+  );
 
   const filteredIngresos = ingresos.filter((item) => {
   // Filtrar por estado

@@ -1,3 +1,4 @@
+/* ========== ESTILOS EXISTENTES ========== */
 .customGroup {
   width: 100%;
 }
@@ -10,18 +11,11 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 5px;
   border-radius: 6px;
-  /* transition: all 0.3s; */
 }
-/* 
-.optionContent:hover {
-  background-color: #e78300;
-} */
 
 .optionContent.checked {
-  /* background-color: #ffaa78; */
-  border: 1px solid #c50606;
+  border: 1px solid #EC0127;
 }
 
 /* Estilos para modo imagen */
@@ -29,24 +23,16 @@
   margin: 2px;
 }
 
-/* .imageOption {
-  flex-direction: column;
-  text-align: center;
-  min-width: 80px;
-  padding: 12px 8px;
-} */
 .imageOption {
-  /* flex-direction: column; */
   text-align: center;
   min-width: 80px;
-  /* padding: 12px 8px; */
   position: relative;
 }
+
 .optionImage {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
-  /* margin-bottom: 4px; */
 }
 
 /* Estilos para modo color */
@@ -55,10 +41,8 @@
 }
 
 .colorOption {
-  /* flex-direction: column; */
   text-align: center;
   min-width: 70px;
-  padding: 12px 8px;
 }
 
 .colorSwatch {
@@ -67,12 +51,10 @@
   border-radius: 50%;
   margin-bottom: 4px;
   border: 2px solid transparent;
-  transition: border-color 0.3s;
 }
 
 .colorOption.checked .colorSwatch {
   border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
 .optionLabel {
@@ -91,4 +73,176 @@
 :global(.ant-radio-wrapper) .optionContent,
 :global(.ant-checkbox-wrapper) .optionContent {
   padding: 4px 8px;
+}
+
+/* ========== NUEVOS ESTILOS PARA CARD STYLE ========== */
+
+/* Ocultar el checkbox nativo SOLO cuando es modo image o color */
+.hiddenCheckbox :global(.ant-checkbox) {
+  display: none;
+}
+
+.hiddenCheckbox {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.hiddenCheckbox:hover {
+  color: inherit !important;
+}
+
+/* ========== CARD CON IMAGEN (Layout horizontal: check - imagen - label) ========== */
+.imageCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  padding: 0px 8px;
+  min-width: 90px;
+  border: 2px solid transparent;
+  justify-content: space-between;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.imageCard:hover {
+  border-color: #EC0127;
+}
+
+.imageCard.checked {
+  border: 2px solid #EC0127;
+  /* border-width: 3px; */
+}
+
+/* Indicador de checkbox (lado izquierdo) */
+.checkboxIndicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid #d9d9d9;
+  background: #ffffff;
+}
+
+.imageCard.checked .checkboxIndicator {
+  border-color: #EC0127;
+  background-color: #EC0127;
+}
+
+.checkIcon {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imageWrapper {
+  width: 50px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.imageWrapper .optionImage {
+  width: 100%;
+  height: 100%;
+  max-width: 50px;
+  max-height: 50px;
+  object-fit: contain;
+}
+
+.colorCard {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 5px;
+  min-width: 100px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.colorCard:hover {
+  border-color: #EC0127;
+}
+
+.colorCard.checked {
+  border: 2px solid #EC0127;
+}
+
+/* Checkbox indicator también al inicio en color cards */
+.colorCard .checkboxIndicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid #d9d9d9;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.colorCard.checked .checkboxIndicator {
+  border-color: #EC0127;
+  background-color: #EC0127;
+}
+
+.colorCard .checkIcon {
+  font-size: 14px;
+}
+
+.colorCircle {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.colorLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #262626;
+  flex: 1;
+}
+
+.colorCard.checked .colorLabel {
+  color: #EC0127;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .imageCard {
+    min-width: 140px;
+    padding: 10px 12px;
+  }
+
+  .imageWrapper {
+    width: 40px;
+    height: 32px;
+  }
+
+  .imageWrapper .optionImage {
+    max-width: 40px;
+    max-height: 32px;
+  }
+
+  .colorCard {
+    min-width: 120px;
+  }
+
+  .imageLabel,
+  .colorLabel {
+    font-size: 13px;
+  }
+}
+/* Muestra el checkbox cuando NO tiene la clase hiddenCheckbox */
+.checkboxGroup :global(.ant-checkbox-wrapper):not(.hiddenCheckbox) :global(.ant-checkbox) {
+    display: inline-block !important;
 }
