@@ -47,11 +47,9 @@ const Login: React.FC = () => {
       if(result.data.user?.isTemporaryPassword){
         dispatch(setTempPassword(data?.password ?? ''));
         navigate(RoutePaths.CHANGE_PASSWORD_TEMP);
-        return;
+      }else{
+        navigate(RoutePaths.HOME);
       }
-
-      navigate(RoutePaths.HOME);
-      return;
     }
   };
  

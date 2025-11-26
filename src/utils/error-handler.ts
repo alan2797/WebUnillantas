@@ -16,7 +16,7 @@ export const handleApiError = (config: ErrorHandlerConfig) => {
     case 401:
       notification.error({
         message: 'Error de Autenticación',
-        description: 'No autorizado. Por favor inicia sesión nuevamente.',
+        description: serverMessage || 'No autorizado. Por favor inicia sesión nuevamente.',
         duration: 5,
         placement: "top"
       });

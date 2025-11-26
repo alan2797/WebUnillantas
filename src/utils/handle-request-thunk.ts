@@ -1,6 +1,6 @@
 import { type AppDispatch } from "../redux/store";
 import { showSpinner, hideSpinner } from "../redux/features/spinner.slice";
-import { message } from "antd";
+import { message, notification } from "antd";
 import type {
   ApiResponse,
   HandleOptions,
@@ -25,16 +25,16 @@ export async function handleRequestThunk<T>(
 
     const result = await thunkAction();
     if (result && result.success) {
-      if (successMessage) message.success(successMessage);
-      if (showMessageApi && result.message) message.success(result.message);
+      if (successMessage) notification.success({ message: successMessage, duration: 5, placement: "top" });
+      if (showMessageApi && result.message) notification.success({ message: result.message, duration: 5, placement: "top" });
     } else {
-      if (errorMessage) message.error(errorMessage);
+      if (errorMessage) notification.error({ message: errorMessage, duration: 5, placement: "top" });
       if (
         showMessageApi &&
         (result?.message ||
           (result?.error && typeof result?.error === "string"))
       ) {
-        message.error(result.message || String(result?.error));
+        notification.error({ message: result.message || String(result?.error), duration: 5, placement: "top" });
       }
     }
 

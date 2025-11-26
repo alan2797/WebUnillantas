@@ -50,9 +50,14 @@ export interface ForgotUsernameRequestDto extends Record<string, unknown> {
 }
 
 export interface ChangePasswordRequestDto extends Record<string, unknown> {
-  tempPassword?: string;
+  oldPassword?: string;
   newPassword?: string;
-  confirmPassword?: string;
+  confirmNewPassword?: string;
+}
+
+export interface ChangePasswordDto {
+  password: ChangePasswordRequestDto;
+  token: string;
 }
 
 export interface ChangePasswordUserRequestDto extends Record<string, unknown> {

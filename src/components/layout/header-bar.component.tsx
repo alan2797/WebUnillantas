@@ -74,11 +74,6 @@ const HeaderBar = () => {
   const userMenu = {
     items: [
       {
-        key: 'theme',
-        label: 'Tema',
-        onClick: () => console.log('Cambiar tema'),
-      },
-      {
         key: 'logout',
         label: 'Cerrar sesión',
         icon: <LogoutOutlined />,
@@ -88,6 +83,7 @@ const HeaderBar = () => {
   };
 
   const handleMainMenuClick = (key: string) => {
+    console.log(key);
     const menuItem = mainMenuItems.find(item => item.key === key);
     
     if (menuItem) {
@@ -111,6 +107,7 @@ const HeaderBar = () => {
   };
 
   const handleSubMenuClick = (key: string) => {
+    console.log(key);
     setActiveSubMenu(key);
     if (key === '/logout') {
       dispatch(logout());
@@ -222,6 +219,11 @@ const HeaderBar = () => {
             <Tabs
               activeKey={activeSubMenu}
               onChange={handleSubMenuClick}
+              onTabClick={(key) => {
+                console.log("Click en tab:", key);
+                setActiveSubMenu(key);
+                handleSubMenuClick(key); // opcional
+              }}
               items={tabItems}
               type="card"
               size="small"

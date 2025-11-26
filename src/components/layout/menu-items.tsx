@@ -1,5 +1,7 @@
+import { CarOutlined } from "@ant-design/icons";
 import type { AppMenuItem } from "../../interfaces/routes.interface";
 import { IconCalendar, IconCar, IconInputSearch, IconLayout, IconLayout2Filled, IconLayoutRows, IconLock, IconMail, IconReportMoney, IconSettingsShare } from "@tabler/icons-react";
+import { RoutePaths } from "../../utils/constants";
 
 export const menuItems: AppMenuItem[] = [
   {
@@ -8,11 +10,12 @@ export const menuItems: AppMenuItem[] = [
     type: "group",
     children: [
       {
-        key: "users",
+        key: "modulos",
         icon: <IconLayout   size={22} stroke={2} />,
         label: "Módulos",
         children: [
-          { key: "1", label: "Consulta de Productos", icon: <IconInputSearch />},
+          { key: RoutePaths.VEHICLE_ENTRY, label: "Ingreso Vehiculos", icon: <CarOutlined />},
+          { key: RoutePaths.HOME, label: "Consulta de Productos", icon: <IconInputSearch />},
           { key: "2", label: "Generar Enlaces", icon: <IconLock />},
           { key: "3", label: "Orden de Trabajo", icon: <IconSettingsShare />},
           { key: "4", label: "Agenda", icon: <IconCalendar />},
