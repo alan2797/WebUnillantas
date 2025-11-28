@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card, Checkbox, Col, DatePicker, Divider, Dropdown, Form, Row, Select, Space } from "antd";
+import { Button, Card, Checkbox, Col, DatePicker, Divider, Dropdown, Form, Input, Row, Select, Space } from "antd";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -63,11 +63,13 @@ const colorsOptions = [
 ];
 
 const VehicleEntryCreate: React.FC = () => {
-  const [filters, setFilters] = useState({dateRange: null as any,status: "all",});
-  const [openDropDown, setOpenDropDown] = useState(false);
-  const [tempFilters, setTempFilters] = useState({dateRange: null as any, status: "all",});
+  const [valueFilterBrand, setValueFilterBrand] = useState("");
+  const [valueFilterColor, setValueFilterColor] = useState("");
+  const [openDropDownFilterBrand, setOpenDropDownFilterBrand] = useState(false);
+  const [openDropDownFilterColor, setOpenDropDownFilterColor] = useState(false);
+  const [tempFilters, setTempFilters] = useState({search: ""});
   const [openModalCancel, setOpenModalCancel] = useState(false);
-  const menuFiltros = (
+  const menuFilterBrand = (
   <div
     style={{
       padding: 16,
@@ -77,42 +79,26 @@ const VehicleEntryCreate: React.FC = () => {
       boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
     }}
   >
-    <DatePicker.RangePicker
+    <Input
+      value={valueFilterBrand}
       style={{ width: "100%", marginBottom: 12 }}
-      format="DD/MM/YYYY"
-      value={tempFilters.dateRange}
-      onChange={(value) =>
-        setTempFilters((prev) => ({ ...prev, dateRange: value }))
-      }
-    />
-
-    <Select
-      value={tempFilters.status}
-      style={{ width: "100%", marginBottom: 12 }}
-      onChange={(value) =>
-        setTempFilters((prev) => ({ ...prev, status: value }))
-      }
-      options={[
-        { value: "all", label: "Todos" },
-        { value: "ingreso", label: "Ingresos" },
-        { value: "salida", label: "Salidas" },
-      ]}
+      onChange={(e) => setValueFilterBrand(e.target.value)}
     />
 
     <Button
       type="primary"
       style={{ width: "100%" }}
-      onClick={() => {
-        setFilters(tempFilters); // <-- aquí recién aplicás los filtros reales
-        console.log("Filtros aplicados:", tempFilters);
-        setOpenDropDown(false);
+      onClick={(e) => {
+        e.stopPropagation();
+        console.log("Filtros aplicados:", valueFilterBrand);
+        setOpenDropDownFilterBrand(false);
       }}
     >
       Aplicar filtros
     </Button>
   </div>
   );
-  const menuFiltros2 = (
+  const menuFilterColor = (
   <div
     style={{
       padding: 16,
@@ -122,35 +108,19 @@ const VehicleEntryCreate: React.FC = () => {
       boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
     }}
   >
-    <DatePicker.RangePicker
+    <Input
+      value={valueFilterColor}
       style={{ width: "100%", marginBottom: 12 }}
-      format="DD/MM/YYYY"
-      value={tempFilters.dateRange}
-      onChange={(value) =>
-        setTempFilters((prev) => ({ ...prev, dateRange: value }))
-      }
-    />
-
-    <Select
-      value={tempFilters.status}
-      style={{ width: "100%", marginBottom: 12 }}
-      onChange={(value) =>
-        setTempFilters((prev) => ({ ...prev, status: value }))
-      }
-      options={[
-        { value: "all", label: "Todos" },
-        { value: "ingreso", label: "Ingresos" },
-        { value: "salida", label: "Salidas" },
-      ]}
+      onChange={(e) => setValueFilterColor(e.target.value)}
     />
 
     <Button
       type="primary"
       style={{ width: "100%" }}
-      onClick={() => {
-        setFilters(tempFilters); // <-- aquí recién aplicás los filtros reales
-        console.log("Filtros aplicados:", tempFilters);
-        setOpenDropDown(false);
+      onClick={(e) => {
+        e.stopPropagation();
+        console.log("Filtros aplicados:", valueFilterColor);
+        setOpenDropDownFilterColor(false);
       }}
     >
       Aplicar filtros
@@ -182,15 +152,16 @@ const VehicleEntryCreate: React.FC = () => {
   };
 
   return (
+    <div className="p-0 p-md-4">
+    <h3 className="fw-bolder">Ingreso del Vehiculo</h3>
     <Card>
-      <h2>Ingreso del Vehiculo</h2>
       <Form
         onFinish={form.handleSubmit(onSubmit)}
         layout="vertical"
         style={{
           background: "#fff",
           borderRadius: 8,
-          padding: 24,
+          padding: 15,
           marginTop: 20,
         }}
       >
@@ -221,23 +192,23 @@ const VehicleEntryCreate: React.FC = () => {
           </Col>
         </Row>
         <Divider />
-        <Row gutter={10}>
-          <Col xs={12}>
-            <Card>
+        <Row gutter={10} >
+          <Col xs={24} lg={12} className="mb-3">
+            <Card style={{borderColor: "#151515"}}>
               <h6>Marca</h6>
               <Dropdown
-                popupRender={()=> menuFiltros2}
+                popupRender={()=> menuFilterBrand}
                 trigger={["click"]}
-                open={openDropDown}
-                onOpenChange={(val) => setOpenDropDown(val)}
+                open={openDropDownFilterBrand}
+                onOpenChange={(val) => setOpenDropDownFilterBrand(val)}
                 >
-                <Button>
-                <Space>
-                  <FilterOutlined />
-                  Filtros
-                  <DownOutlined />
-                  </Space>
-                  </Button>
+                <Button color="danger" variant="outlined" style={{color: "black", borderRadius: 15}}>
+                  <Space>
+                    <FilterOutlined />
+                    Filtros
+                    <DownOutlined />
+                    </Space>
+                </Button>
               </Dropdown>
               <CheckboxGroupCustom
                 fieldConfig={{
@@ -251,6 +222,12 @@ const VehicleEntryCreate: React.FC = () => {
                   displayMode: "image",
                   singleSelect: true,
                   xs: 24,
+                  styleContainer: {
+                    border: "1px solid #151515",
+                    borderRadius: "8px",
+                    marginTop: "5px",
+                    padding: "8px 0px 8px 0px"
+                  }
                 }}
                 control={form.control}
                 error={form.formState.errors.vehicleBrand?.message}
@@ -272,12 +249,12 @@ const VehicleEntryCreate: React.FC = () => {
 
               <h6>Color</h6>
               <Dropdown
-                popupRender={()=> menuFiltros}
+                popupRender={()=> menuFilterColor}
                 trigger={["click"]}
-                open={openDropDown}
-                onOpenChange={(val) => setOpenDropDown(val)}
+                open={openDropDownFilterColor}
+                onOpenChange={(val) => setOpenDropDownFilterColor(val)}
                 >
-                <Button>
+                <Button color="danger" variant="outlined" style={{color: "black", borderRadius: 15}}>
                 <Space>
                   <FilterOutlined />
                   Filtros
@@ -297,6 +274,12 @@ const VehicleEntryCreate: React.FC = () => {
                   displayMode: "color",
                   singleSelect: true,
                   xs: 24,
+                  styleContainer: {
+                    border: "1px solid #151515",
+                    borderRadius: "8px",
+                    marginTop: "5px",
+                    padding: "8px 0px 8px 0px"
+                  }
                 }}
                 control={form.control}
                 error={form.formState.errors.vehicleColor?.message}
@@ -304,13 +287,14 @@ const VehicleEntryCreate: React.FC = () => {
             </Card>
           </Col>
 
-          <Col xs={12}>
+          <Col  xs={24} lg={12} className="mb-3">
             <Card
               style={{
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
+                borderColor: "#151515"
               }}
             >
               <Row gutter={30}>
@@ -320,7 +304,6 @@ const VehicleEntryCreate: React.FC = () => {
                     key={String(field.key)}
                     xs={field.xs}
                     md={field.md}
-                    style={{ border: "2px solid #a0a0a03b", borderRadius: 7 }}
                   >
                     {field.type === "divider" ? (
                       <Divider className="my-0 mb-2" />
@@ -341,7 +324,7 @@ const VehicleEntryCreate: React.FC = () => {
         </Row>
         <Divider />
         <Row justify={"end"} gutter={16}>
-          <Col xs={24} md={10} lg={4} xl={4} xxl={3}>
+          <Col xs={24} md={10} lg={4} xl={4} xxl={3} className="mb-2">
             <ButtonCustom
               block
               htmlType="button"
@@ -431,6 +414,8 @@ const VehicleEntryCreate: React.FC = () => {
       </ModalForm>
 
     </Card>
+    </div>
+    
 
     
   );

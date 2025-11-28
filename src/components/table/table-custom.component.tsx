@@ -356,6 +356,7 @@ export const TableCustom = <T extends { [key: string]: any }>({
         scroll={{ x: "max-content",y: scrollY || undefined}}
         rowSelection={rowSelection}
         rowKey={rowKey}
+        
       />
     </div>
   );

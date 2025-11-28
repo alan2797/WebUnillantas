@@ -15,6 +15,7 @@ const CheckboxGroupCustom = <TFormValues extends Record<string, any>>({
     options = [], 
     singleSelect = false, 
     style,
+    styleContainer,
     displayMode = "text",
     direction = "vertical",
   } = fieldConfig;
@@ -83,56 +84,59 @@ const CheckboxGroupCustom = <TFormValues extends Record<string, any>>({
         name={key as any}
         control={control}
         render={({ field }) => (
-          <Checkbox.Group
-            value={
-              singleSelect
-                ? field.value ? [field.value] : []
-                : field.value || []
-            }
-            onChange={(checkedValues) => {
-              if (singleSelect) {
-                const newValue = checkedValues.pop();
-                // Convertir a string siempre si typeValue es string
-                if (fieldConfig.typeValue === "string") {
-                  field.onChange(newValue ? String(newValue) : "");
-                } else {
-                  field.onChange(newValue ?? null);
-                }
-              } else {
-                field.onChange(checkedValues);
+          <div style={styleContainer}>
+            <Checkbox.Group
+              value={
+                singleSelect
+                  ? field.value ? [field.value] : []
+                  : field.value || []
               }
-            }}
-            style={style}
-            className={styles.checkboxGroup}
-          >
-            <Space 
-              direction={direction} 
-              wrap
-              size={displayMode === "text" ? 8 : 4}
+              onChange={(checkedValues) => {
+                if (singleSelect) {
+                  const newValue = checkedValues.pop();
+                  // Convertir a string siempre si typeValue es string
+                  if (fieldConfig.typeValue === "string") {
+                    field.onChange(newValue ? String(newValue) : "");
+                  } else {
+                    field.onChange(newValue ?? null);
+                  }
+                } else {
+                  field.onChange(checkedValues);
+                }
+              }}
+              style={style}
               className={styles.checkboxGroup}
             >
-              {options.map((opt) => {
-                const isChecked = singleSelect 
-                  ? field.value === opt.value
-                  : field.value?.includes(opt.value);
+              <Space 
+                direction={direction} 
+                wrap
+                size={displayMode === "text" ? 8 : 4}
+                className={styles.checkboxGroup}
+              >
+                {options.map((opt) => {
+                  const isChecked = singleSelect 
+                    ? field.value === opt.value
+                    : field.value?.includes(opt.value);
 
-                // Para modo texto, no aplicar clase hiddenCheckbox
-                const checkboxClassName = (displayMode === 'image' || displayMode === 'color') 
-                  ? styles.hiddenCheckbox 
-                  : '';
+                  // Para modo texto, no aplicar clase hiddenCheckbox
+                  const checkboxClassName = (displayMode === 'image' || displayMode === 'color') 
+                    ? styles.hiddenCheckbox 
+                    : '';
 
-                return (
-                  <Checkbox 
-                    key={String(opt.value)} 
-                    value={opt.value}
-                    className={checkboxClassName}
-                  >
-                    {renderOptionContent(opt, isChecked)}
-                  </Checkbox>
-                );
-              })}
-            </Space>
-          </Checkbox.Group>
+                  return (
+                    <Checkbox 
+                      key={String(opt.value)} 
+                      value={opt.value}
+                      className={checkboxClassName}
+                    >
+                      {renderOptionContent(opt, isChecked)}
+                    </Checkbox>
+                  );
+                })}
+              </Space>
+            </Checkbox.Group>
+          </div>
+          
         )}
       />
     </Form.Item>

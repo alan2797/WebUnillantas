@@ -15,8 +15,8 @@ export const menuItems: AppMenuItem[] = [
         label: "Módulos",
         children: [
           { key: RoutePaths.VEHICLE_ENTRY, label: "Ingreso Vehiculos", icon: <CarOutlined />},
+          { key: RoutePaths.QUOTATION_REPORT, label: "Cotizaciones", icon: <IconLock />},
           { key: RoutePaths.HOME, label: "Consulta de Productos", icon: <IconInputSearch />},
-          { key: "2", label: "Generar Enlaces", icon: <IconLock />},
           { key: "3", label: "Orden de Trabajo", icon: <IconSettingsShare />},
           { key: "4", label: "Agenda", icon: <IconCalendar />},
           { key: "5", label: "Tránsito", icon: <IconCar />},

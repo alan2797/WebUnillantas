@@ -12,6 +12,7 @@ const ChangeTemporaryPassword = lazy(() => import('../pages/temporary-password/t
 
 const VehicleEntry = lazy(() => import('../pages/vehicle/vehicle-entry/vehicle-entry.page'));
 const VehicleEntryCreate = lazy(() => import('../pages/vehicle/vehicle-create/vehicle-entry-create.page'));
+const QuotationReport = lazy(() => import('../pages/quotation/quotation-report/quotation-report.page'));
 
 
 
@@ -55,16 +56,23 @@ export const privateRoutes: RouteConfig[] = [
   {
     path: RoutePaths.VEHICLE_ENTRY,
     component: VehicleEntry,
-    isPrivate: false,
+    isPrivate: true,
     layout: 'main',
     title: 'Entrada de Vehiculo'
   },
   {
     path: RoutePaths.VEHICLE_ENTRY_CREATE,
     component: VehicleEntryCreate,
-    isPrivate: false,
+    isPrivate: true,
     layout: 'main',
     title: 'Crear Entrada del Vehiculo'
+  },
+  {
+    path: RoutePaths.QUOTATION_REPORT,
+    component: QuotationReport,
+    isPrivate: true,
+    layout: 'main',
+    title: 'Reporte Cotización'
   },
   
 ];

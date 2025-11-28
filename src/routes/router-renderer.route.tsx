@@ -21,7 +21,7 @@ export const renderRoutes = (routes: RouteConfig[], isAuthenticated: boolean) =>
             element={
               <PrivateRoute isAuthenticated={isAuthenticated} 
                             requiredPermissions={route?.meta?.permissions || []}>
-                <MainLayout useWrapper={true}/>
+                <MainLayout/>
               </PrivateRoute>
             }
           >

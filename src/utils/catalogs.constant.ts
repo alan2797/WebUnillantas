@@ -9,3 +9,8 @@ export const rolOptions = [
   { value: "2", label: "Salida" },
   { value: "3", label: "Ambos" },
 ]
+
+export const FilterQuotationReport =[
+  { value: "1", label: "Cerrado" },
+  { value: "2", label: "Facturado" },
+]

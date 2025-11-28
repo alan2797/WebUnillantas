@@ -46,7 +46,7 @@ const App: React.FC = () => {
     <Router basename={env.baseHref}>  
       <ConfigProvider locale={esES}>
         {/* <AppRoutes isAuthenticated={isAuthenticated} /> */}
-        <AppRoutes isAuthenticated={isAuthenticated} />
+        <AppRoutes isAuthenticated={true} />
       </ConfigProvider>
     </Router>
   );

@@ -82,6 +82,12 @@ export const configForm2= (): FieldConfig<VehicleEntryCreate>[] => [
     { value: "servicio", label: "Servicio"},
     { value: "ambos", label: "Ambos"},
   ],
+  styleContainer: {
+    border: "1px solid #151515",
+    borderRadius: "8px",
+    marginTop: "5px",
+     padding: "20px 15px"
+  }
 },
 {
   key: "orderType", 
@@ -97,5 +103,11 @@ export const configForm2= (): FieldConfig<VehicleEntryCreate>[] => [
     { value: "2", label: "Para Llevar"},
     { value: "3", label: "Despacho"},
   ],
+  styleContainer: {
+    border: "1px solid #151515",
+    borderRadius: "8px",
+    marginTop: "5px",
+    padding: "20px 15px"
+  }
 },
 ]

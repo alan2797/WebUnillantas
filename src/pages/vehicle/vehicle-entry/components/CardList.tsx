@@ -110,7 +110,7 @@ export const CardList: React.FC<IngresoCardProps> = ({
         icon={<IconTimelineEvent size={20} fontWeight={"bolder"} />} 
         onClick={onVerHistorial}
         className='view-history'
-        style={{ marginTop: 12, padding: 10, color: '#ff4d4f', fontWeight:"bold" }}
+        style={{ marginTop: 12, padding: 10, fontWeight:"bold" }}
       >
         Ver Historial
       </Button>

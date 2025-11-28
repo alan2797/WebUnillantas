@@ -157,7 +157,7 @@ const VehicleEntry: React.FC = () => {
           open={openDropDown}
           onOpenChange={(val) => setOpenDropDown(val)}
           >
-          <Button>
+          <Button color="danger" variant="outlined" style={{color: "black", borderRadius: 15}}>
           <Space>
             <FilterOutlined />
             Filtros

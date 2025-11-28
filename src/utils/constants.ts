@@ -9,8 +9,9 @@ export const RoutePaths = {
 
   // Private routes
   HOME: "/",
-  VEHICLE_ENTRY: "/vehicle-entry",
-  VEHICLE_ENTRY_CREATE: "/vehicle-entry-create",
+  VEHICLE_ENTRY: "/ingreso-vehiculo",
+  VEHICLE_ENTRY_CREATE: "/crear-ingreso-vehiculo",
+  QUOTATION_REPORT: "/reporte-cotizacion",
 
   // Catch all
   NOT_FOUND: "*",
