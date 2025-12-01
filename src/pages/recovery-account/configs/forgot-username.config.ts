@@ -4,7 +4,7 @@ import type { ForgotUsernameRequestDto } from "../../../interfaces/login.interfa
 export const configForm =
   (): FieldConfig<ForgotUsernameRequestDto>[] => [
     {
-      key: "email",
+      key: "username",
       type: "text",
       typeValue: "string",
       label: "Usuario",

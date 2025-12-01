@@ -46,7 +46,7 @@ export interface SelectAreaDto {
 }
 
 export interface ForgotUsernameRequestDto extends Record<string, unknown> {
-  email?: string;
+  username?: string;
 }
 
 export interface ChangePasswordRequestDto extends Record<string, unknown> {
@@ -84,7 +84,7 @@ export interface BlockedUsernameReponse {
 
 export interface ForgotPasswordRequestDto extends Record<string, unknown> {
   username?: string;
-  email?: string;
+  //email?: string;
 }
 
 export interface ForgotPasswordReponse {

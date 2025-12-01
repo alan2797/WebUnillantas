@@ -23,8 +23,8 @@ export const blockedUsernameService = async (data: BlockedUsernameRequestDto) =>
   return res;
 };
 
-export const forgotPasswordService = async (data: ForgotPasswordRequestDto) => {
-  const res = await api.post("/auth/recovery/password", data);
+export const forgotPasswordService = async (data: ForgotUsernameRequestDto) => {
+  const res = await api.post("/auth/forgot-password", data);
   return res;
 };
 

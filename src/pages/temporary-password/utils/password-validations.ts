@@ -41,9 +41,9 @@ export const validatePasswordInRealTime = (password: string, passwordConfirm?: s
     {
       type: "match", 
       message: "Ambas contraseñas deben ser iguales",
-      isValid: password.length > 0 &&
+      isValid: password?.length > 0 &&
       (passwordConfirm?.length ?? 0) > 0
-      ? password === passwordConfirm
+      ? password == passwordConfirm
       : false
     },
 

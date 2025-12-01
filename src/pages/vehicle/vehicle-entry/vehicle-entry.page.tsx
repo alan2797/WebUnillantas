@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Dropdown, Row, Select, Space } from 'antd';
+import { Alert, Button, Card, Col, DatePicker, Dropdown, Row, Select, Space } from 'antd';
 import { PlusOutlined, FilterOutlined, DownOutlined } from '@ant-design/icons';
 import { CardList } from './components/CardList';
 import dayjs from "dayjs";
@@ -123,14 +123,15 @@ const VehicleEntry: React.FC = () => {
         </Dropdown>
       </Row>
       <Row gutter={[16, 16]}>
-        {datasource.map((ingreso) => (
+        {datasource?.map((ingreso) => (
           <Col xs={24} key={ingreso.entryId}>
             <CardList
               nombre={ingreso.clienteNombre}
               horaIngreso={dayjs(ingreso.tiempos.ingreso, "HH:mm:ss").format("hh:mm A")}
               horaSalida={dayjs(ingreso.tiempos.salida, "HH:mm:ss").format("hh:mm A")}
               placa={ingreso.vehiculo.placa}
-              imagen={ingreso.vehiculo.marca}
+              //imagen={ingreso.vehiculo.marca}
+              marca={ingreso.vehiculo.marca}
               modelo={ingreso.vehiculo.modelo}
               color={ingreso.vehiculo.color}
               tipo={ingreso.estado}
@@ -138,6 +139,9 @@ const VehicleEntry: React.FC = () => {
             />
           </Col>
         ))}
+        {datasource.length < 1 && <Col xs={24}>
+          <Card className='text-center'>No se encontro información</Card>
+        </Col>}
       </Row>
 
     </div>

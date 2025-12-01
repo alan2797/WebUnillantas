@@ -132,8 +132,8 @@ const authSlice = createSlice({
       .addCase(changePassword.fulfilled, (state, action) => {
         state.user = action.payload.data;
         if(action.payload.success && state.tempToken){
-          state.token = state.tempToken;
-          localStorageService.setToken(state.tempToken);
+          /*state.token = state.tempToken;
+          localStorageService.setToken(state.tempToken);*/
           state.tempPassword = null;
           state.tempToken = null;
         }

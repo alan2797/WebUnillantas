@@ -7,6 +7,7 @@ export const usePasswordValidation = (password: string, passwordConfirm: string)
 
   useEffect(() => {
     const result = validatePasswordInRealTime(password, passwordConfirm);
+    console.log(result);
     setValidations(result.validations);
     setIsValid(result.isValid);
   }, [password, passwordConfirm]);

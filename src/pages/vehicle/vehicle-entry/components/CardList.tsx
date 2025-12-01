@@ -23,6 +23,7 @@ export interface IngresoCardProps {
   color: string;
   tipo: 'FINALIZADO' | 'CANCELADO' | 'EN_PISTA' | string;
   imagen?: string;
+  marca?: string;
   onVerHistorial?: () => void;
 }
 
@@ -35,6 +36,7 @@ export const CardList: React.FC<IngresoCardProps> = ({
   imagen,
   color,
   tipo,
+  marca,
   onVerHistorial
 }) => {
   return (
@@ -57,11 +59,12 @@ export const CardList: React.FC<IngresoCardProps> = ({
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', color: '#666', flexWrap: 'wrap' }}>
-            <img
+            {/*<img
               src={imagen}
               alt="car logo"
               style={{ width: 35}}
-            />
+            />*/}
+            <span>{marca}</span>
             <span>|</span>
             <span>{placa}</span>
             <span>|</span>

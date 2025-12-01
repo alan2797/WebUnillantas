@@ -45,7 +45,7 @@ const ChangeTemporaryPassword: React.FC = () => {
 
   const passwordConfirm = useWatch({
     control,
-    name: "confirmPassword",
+    name: "confirmNewPassword",
     defaultValue: "",
   }) as string;
 
@@ -68,7 +68,7 @@ const ChangeTemporaryPassword: React.FC = () => {
       showMessageApi: true
     });
     if(result?.success){
-      navigate(RoutePaths.HOME);
+      navigate(RoutePaths.LOGIN);
     }
   };
 

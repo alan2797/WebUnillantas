@@ -84,12 +84,14 @@ export const handleApiError = (config: ErrorHandlerConfig) => {
           style: {
             width: 500,
           },
+          placement: "top"
         });
       } else {
         notification.error({
           message: 'Error',
           description:  serverMessage ||  errorMessage || "Ocurrió un error inesperado.",
           duration: 5,
+          placement: "top"
         });
       }
       break;
