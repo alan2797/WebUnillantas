@@ -1,15 +1,8 @@
 import React, { useState } from "react";
-import { Button, Card, Checkbox, Col, DatePicker, Divider, Dropdown, Form, Input, Row, Select, Space } from "antd";
+import { Button, Card, Checkbox, Col, Divider, Dropdown, Form, Input, Row, Select, Space } from "antd";
 import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  DeleteOutlined,
   DownOutlined,
-  EyeOutlined,
-  FileAddOutlined,
   FilterOutlined,
-  PlusCircleOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
@@ -22,13 +15,13 @@ import {
   buildDefaultValues,
   generateZodSchema,
 } from "../../../validators/validations";
-import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormField } from "../../../components/form-field/form-field.component";
 import CheckboxGroupCustom from "../../../components/checkbox/checkbox.component";
 import CustomSelect from "../../../components/select/select.component";
 import ModalForm from "../../../components/modals/modal-form.component";
-import { IconCheckupList, IconSend } from "@tabler/icons-react";
+import { IconCheckupList, IconSend, IconTimelineEvent, IconTransform } from "@tabler/icons-react";
+import { useForm } from "react-hook-form";
 
 const brandsOptions = [
   { value: "kia", label: "KIA", image: "https://logo.clearbit.com/suzuki.fr" },
@@ -67,14 +60,18 @@ const VehicleEntryCreate: React.FC = () => {
   const [valueFilterColor, setValueFilterColor] = useState("");
   const [openDropDownFilterBrand, setOpenDropDownFilterBrand] = useState(false);
   const [openDropDownFilterColor, setOpenDropDownFilterColor] = useState(false);
-  const [tempFilters, setTempFilters] = useState({search: ""});
+  const [cancelReasons, setCancelReasons] = useState<string[]>([]);
+  const [otherReason, setOtherReason] = useState("");
+
+
+
   const [openModalCancel, setOpenModalCancel] = useState(false);
   const menuFilterBrand = (
   <div
     style={{
       padding: 16,
       width: 250,
-      background: "#fff", // <-- fondo blanco siempre
+      background: "#fff",
       borderRadius: 8,
       boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
     }}
@@ -151,6 +148,13 @@ const VehicleEntryCreate: React.FC = () => {
     console.log("📋 Todos los valores del form:", form.getValues());
   };
 
+ const cancelQuotation = () => {
+  console.log("Motivos seleccionados:", cancelReasons);
+  console.log("Otro motivo:", otherReason);
+  setCancelReasons([]);
+  setOtherReason("");
+};
+
   return (
     <div className="p-0 p-md-4">
     <h3 className="fw-bolder">Ingreso del Vehiculo</h3>
@@ -189,6 +193,36 @@ const VehicleEntryCreate: React.FC = () => {
                 </Col>
               ))}
             </Row>
+          </Col>
+        </Row>
+
+        <Row justify={"start"} gutter={16}>
+          <Col xs={24} md={12} lg={6} xl={4} xxl={3}>
+            <ButtonCustom
+              block
+              htmlType="button"
+              type="primary"
+              variant="solid"
+              icon={<IconTransform />}
+              text="Cambiar Dueño"
+              className="mb-2"
+              onClick={() => {
+                // setOpenModalCancel(true);
+              }}
+            />
+          </Col>
+          <Col xs={24} md={12} lg={6} xl={4} xxl={3}>
+            <ButtonCustom
+              block
+              htmlType="submit"
+              color="danger"
+              variant="filled"
+              icon={<IconTimelineEvent/>}
+              text="Historial"
+              onClick={()=>{
+
+              }}
+            />
           </Col>
         </Row>
         <Divider />
@@ -321,6 +355,7 @@ const VehicleEntryCreate: React.FC = () => {
               </Row>
             </Card>
           </Col>
+          
         </Row>
         <Divider />
         <Row justify={"end"} gutter={16}>
@@ -335,7 +370,11 @@ const VehicleEntryCreate: React.FC = () => {
               onClick={() => {
                 setOpenModalCancel(true);
               }}
-            />
+              style={{borderColor:"#000000", color:"#000000"}}
+              
+              
+              
+              />
           </Col>
           <Col xs={24} md={10} lg={4} xl={4} xxl={3}>
             <ButtonCustom
@@ -352,7 +391,12 @@ const VehicleEntryCreate: React.FC = () => {
 
       <ModalForm
         open={openModalCancel}
-        onClose={() => setOpenModalCancel(false)}
+        onClose={() => {
+          setOpenModalCancel(false);
+          // Opcional: limpiar aquí también si cierras sin enviar
+          setCancelReasons([]);
+          setOtherReason("");
+        }}
         width={600}
         title="Cotización Cancelada"
         description="Queremos entender tu decisión. Cuéntanos que te detuvo para poder mejorar tu experiencia o ajustar la propuesta."
@@ -363,6 +407,7 @@ const VehicleEntryCreate: React.FC = () => {
             type: "default",
             onClick: () => {
               setOpenModalCancel(false);
+              cancelQuotation()
             },
             className: "border-primary-antd text-primary-antd",
             icon: <IconCheckupList />,
@@ -372,7 +417,8 @@ const VehicleEntryCreate: React.FC = () => {
             text: "Enviar Comentarios",
             type: "primary",
             onClick: () => {
-              // handleCreate();
+              setOpenModalCancel(false)
+              cancelQuotation();
             },
             className: "bg-primary-antd",
             icon: <IconSend />,
@@ -382,32 +428,64 @@ const VehicleEntryCreate: React.FC = () => {
       >
         <Row gutter={20}>
           <Col xs={24}>
-              <Form layout="vertical">
-                <Form.Item>
-                  <Checkbox.Group style={{ width: "100%" }}>
-                    <Row>
-                      <Col span={24}>
-                        <Checkbox value="No entendí algún punto  de la cotización">No entendí algún punto  de la cotización</Checkbox>
-                      </Col>
-                      <Col span={24}>
-                        <Checkbox value="El precio es más alto de los esperado">El precio es más alto de los esperado</Checkbox>
-                      </Col>
-                      <Col span={24}>
-                        <Checkbox value="Aún no estoy listo para decidir">Aún no estoy listo para decidir</Checkbox>
-                      </Col>
-                      <Col span={24}>
-                        <Checkbox value="Necesito consultar con alguien má">Necesito consultar con alguien más</Checkbox>
-                      </Col>
-                      <Col span={24}>
-                        <Checkbox value="No confío del todo en el proceso">No confío del todo en el proceso</Checkbox>
-                      </Col>
-                      <Col span={24}>
-                        <Checkbox value="Otro mótivo">Otro mótivo:</Checkbox>
-                        
-                      </Col>
-                    </Row>
-                  </Checkbox.Group>
-                </Form.Item>
+            <Form layout="vertical">
+              <Form.Item>
+                <Checkbox.Group
+                  style={{ width: "100%" }}
+                  value={cancelReasons}
+                  onChange={(values) => {
+                    setCancelReasons(values as string[]);
+                    if (!values.includes("Otro motivo")) {
+                      setOtherReason("");
+                    }
+                  }}
+                >
+                  <Row>
+                    <Col span={24}>
+                      <Checkbox value="No entendí algún punto  de la cotización">
+                        No entendí algún punto de la cotización
+                      </Checkbox>
+                    </Col>
+
+                    <Col span={24}>
+                      <Checkbox value="El precio es más alto de los esperado">
+                        El precio es más alto de lo esperado
+                      </Checkbox>
+                    </Col>
+
+                    <Col span={24}>
+                      <Checkbox value="Aún no estoy listo para decidir">
+                        Aún no estoy listo para decidir
+                      </Checkbox>
+                    </Col>
+
+                    <Col span={24}>
+                      <Checkbox value="Necesito consultar con alguien más">
+                        Necesito consultar con alguien más
+                      </Checkbox>
+                    </Col>
+
+                    <Col span={24}>
+                      <Checkbox value="No confío del todo en el proceso">
+                        No confío del todo en el proceso
+                      </Checkbox>
+                    </Col>
+
+                    <Col span={24}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                        <Checkbox value="Otro motivo">Otro motivo:</Checkbox>
+                        <Input
+                          placeholder="Escribe aquí tu motivo"
+                          disabled={!cancelReasons.includes("Otro motivo")}
+                          value={otherReason}
+                          onChange={(e) => setOtherReason(e.target.value)}
+                          style={{ marginLeft: "24px", width: "calc(100% - 24px)" }}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                </Checkbox.Group>
+              </Form.Item>
             </Form>
           </Col>
         </Row>

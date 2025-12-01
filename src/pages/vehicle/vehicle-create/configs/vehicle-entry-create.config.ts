@@ -111,3 +111,4 @@ export const configForm2= (): FieldConfig<VehicleEntryCreate>[] => [
   }
 },
 ]
+
