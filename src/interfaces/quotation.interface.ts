@@ -8,6 +8,7 @@ export interface QuotationReportFilters extends Record<string, unknown> {
 }
 
 export interface QuotationReportTable {
+    id:string;
     quotationCode?: string;        
     vehiclePlate?: string;         
     vehicleBrand?: string;        

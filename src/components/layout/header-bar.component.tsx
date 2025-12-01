@@ -167,7 +167,6 @@ const HeaderBar = () => {
           <span className={styles.company}>UNILLANTAS</span>
         </div>         
 
-        {/* CENTRO - Navegación Principal */}
         <div className={styles.center}>
           <Search
             placeholder="Buscar..."
@@ -192,7 +191,6 @@ const HeaderBar = () => {
           </div>
         </div>
 
-        {/* DERECHA - Usuario */}
         <div className={styles.right}>
           <Dropdown menu={userMenu} trigger={['click']}>
             <div className={styles.userBox}>
@@ -211,8 +209,7 @@ const HeaderBar = () => {
           </Dropdown>
         </div>
       </div>
-
-      {/* Barra de Sub Navegación (Tabs) - Centrada con iconos */}
+      
       {showSubNavigation && getActiveSubItems().length > 0 && (
         <div className={styles.subNavigation}>
           <div className={styles.subNavigationCenter}>

@@ -21,7 +21,7 @@ export interface IngresoCardProps {
   placa: string;
   modelo: string;
   color: string;
-  tipo: 'ingreso' | 'salida';
+  tipo: 'FINALIZADO' | 'CANCELADO' | 'EN_PISTA' | string;
   imagen?: string;
   onVerHistorial?: () => void;
 }
@@ -43,18 +43,15 @@ export const CardList: React.FC<IngresoCardProps> = ({
       style={{ marginBottom: 16 }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {/* Lado izquierdo - Ingreso (solo si tiene horaIngreso) - DESKTOP */}
         {horaIngreso && (
           <div className="side-icon left-icon" style={{ gap: 4 }}>
-            <IconCar size={40} color='#52c41a' />
+            {tipo==='CANCELADO'?<IconCarCrash size={40} color="#ff4d4f" style={{ transform: "scaleX(-1)" }} />:<IconCar size={40} color='#52c41a' />}
             <div style={{ fontSize: 12, color: '#888' }}>{horaIngreso}</div>
           </div>
         )}
-
-        {/* Centro - Información */}
         <div style={{ flex: 1, marginLeft: 24 }}>
           <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-start" }}>
-            <h3 style={{ margin: 0, marginBottom: 8, whiteSpace: "nowrap" }}>{nombre}</h3>
+            <h3 style={{ margin: 0, marginBottom: 8}}>{nombre}</h3>
             <div style={{ width: "100%" }}>
               <Divider style={{ margin: "8px 0", borderTopWidth:2}} />
             </div>
@@ -72,28 +69,23 @@ export const CardList: React.FC<IngresoCardProps> = ({
             <span>|</span>
             <span>{color}</span>
           </div>
-          
-          {/* Iconos móviles - solo visibles en pantallas pequeñas */}
           <div className="mobile-icons">
             {horaIngreso && (
               <div className="mobile-icon-item">
-                <IconCar size={40} color="#52c41a" />
+                 {tipo==='CANCELADO'?<IconCarCrash size={40} color="#ff4d4f" style={{ transform: "scaleX(-1)" }} />:<IconCar size={40} color='#52c41a' />}
                 <span className="mobile-time">{horaIngreso}</span>
               </div>
             )}
-
-            {horaSalida && (
+            {tipo === 'FINALIZADO' && horaSalida && (
               <div className="mobile-icon-item">
                 <IconCarCrash size={40} color="#ff4d4f" style={{ transform: "scaleX(-1)" }} />
                 <span className="mobile-time">{horaSalida}</span>
               </div>
             )}
           </div>
-          
         </div>
 
-        {/* Lado derecho - Salida - DESKTOP */}
-        {tipo === 'salida' && horaSalida && (
+        {tipo === 'FINALIZADO' && horaSalida && (
           <div className="side-icon right-icon" style={{ gap: 4 }}>
             <IconCarCrash size={40} color='#ff4d4f' style={{ transform: "scaleX(-1)" }}/>
             <div style={{ fontSize: 12, color: '#888' }}>{horaSalida}</div>
@@ -102,7 +94,6 @@ export const CardList: React.FC<IngresoCardProps> = ({
         
       </div>
       <Divider className='my-0 mt-4' style={{borderTopWidth:2}}/>
-      {/* Botón Ver Historial */}
       <Button 
         type="text"
         color='danger'

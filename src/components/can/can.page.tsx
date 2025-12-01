@@ -11,21 +11,22 @@ interface CanProps {
 }
 
 const Can: React.FC<CanProps> = ({ permission, children }) => {
-  const permissionsState  = useSelector((state: RootState) => state.auth.permissions);
-  const permissions = Array.isArray(permissionsState) ? permissionsState : [];
+  // const permissionsState  = useSelector((state: RootState) => state.auth.permissions);
+  // const permissions = Array.isArray(permissionsState) ? permissionsState : [];
   const token = localStorage.getItem("token");
   if (!token) return null;
 
   try {
-    const decoded = jwtDecode<TokenPayload>(token);
-    if(decoded.isAdmin) return <>{children}</>;
-    const userPermissions = permissions.map((item) => item.code) || [];
+    // const decoded = jwtDecode<TokenPayload>(token);
+    // if(decoded.isAdmin) return <>{children}</>;
+    // const userPermissions = permissions.map((item) => item.code) || [];
 
-    const hasPermission = Array.isArray(permission)
-      ? permission.some((perm) => userPermissions.includes(perm))
-      : userPermissions.includes(permission);
+    // const hasPermission = Array.isArray(permission)
+    //   ? permission.some((perm) => userPermissions.includes(perm))
+    //   : userPermissions.includes(permission);
 
-    return hasPermission ? <>{children}</> : null;
+    // return hasPermission ? <>{children}</> : null;
+    return <>{children}</>;
   } catch {
     return null;
   }

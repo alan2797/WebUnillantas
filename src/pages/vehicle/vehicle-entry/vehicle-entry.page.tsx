@@ -1,82 +1,38 @@
-import React, { useState } from 'react';
-import { Button, Col, DatePicker, Dropdown, Form, Popover, Row, Select, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Col, DatePicker, Dropdown, Row, Select, Space } from 'antd';
 import { PlusOutlined, FilterOutlined, DownOutlined } from '@ant-design/icons';
-import { CardList, type Ingreso } from './components/CardList';
-import { useForm } from 'react-hook-form';
-import type { VehicleEntryConfig } from '../../../interfaces/vehicle-entry.interface';
-import type { FieldConfig } from '../../../interfaces/components.interface';
-import { buildDefaultValues } from '../../../validators/validations';
+import { CardList } from './components/CardList';
 import dayjs from "dayjs";
-import isBetween from "dayjs/plugin/isBetween";
 import { useNavigate } from 'react-router-dom';
 import { RoutePaths } from '../../../utils/constants';
+import { getAllVehicleEntriesService } from '../../../services/vehicle-entry';
+import type { ApiResponse } from '../../../interfaces/components.interface';
+import type { VehicleEntryFilter, VehicleEntryResponseDto } from '../../../interfaces/vehicle-entry.interface';
+import { handleRequestAxios } from '../../../utils/handle-request-axios';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../../redux/store';
 
-
-
-
-// const configFormSchema: FieldConfig<VehicleEntryConfig>[] = configForm();
 
 const VehicleEntry: React.FC = () => {
-  const [filters, setFilters] = useState({dateRange: null as any, status: "all"});
+  const dispatch = useDispatch<AppDispatch>();
   const [openDropDown, setOpenDropDown] = useState(false);
-  const [tempFilters, setTempFilters] = useState({dateRange: null as any, status: "all",});
-  dayjs.extend(isBetween);
-  const navigate = useNavigate();
-  const [ingresos, setIngresos] = useState<Ingreso[]>([
-    {
-      id: '1',
-      nombre: 'Luis Fernando Umaña Cruz',
-      horaIngreso: '7:40 AM',
-      horaSalida: '8:40 AM',
-      placa: '624-ML1',
-      modelo: 'Kia Sedona',
-      color: 'Blanco',
-      imagen:"https://logo.clearbit.com/chery.cn"
-    },
-    {
-      id: '2',
-      nombre: 'Mario Canedo Funes',
-      horaIngreso: '10:30 AM',
-      horaSalida: '11:30 AM',
-      placa: '624-ML1',
-      modelo: 'Kia Sedona',
-      color: 'Blanco',
-      imagen:"https://logo.clearbit.com/toyotacomauto.com"
-    },
-    {
-      id: '3',
-      nombre: 'Carlos Miranda Ortega',
-      horaIngreso: '10:30 AM',
-      horaSalida: '',
-      placa: '624-JL5',
-      modelo: 'Suzuki Vitara',
-      color: 'Blanco',
-      imagen:"https://logo.clearbit.com/suzuki.fr"
-    },
-    {
-      id: '4',
-      nombre: 'Luis Mendez Foltran',
-      horaSalida: '12:45 AM',
-      placa: '624-JL5',
-      modelo: 'Suzuki Vitara',
-      color: 'Blanco',
-      imagen:"https://logo.clearbit.com/suzuki.fr"
-    }
-  ]);
+  const [tempFilters, setTempFilters] = useState({dateRange: null as any, status: "TODOS",});
+  const [datasource, setDataSource] = useState<VehicleEntryResponseDto[]>([])
 
+  const navigate = useNavigate();
   const menuFiltros = (
   <div
     style={{
       padding: 16,
       width: 250,
-      background: "#fff", // <-- fondo blanco siempre
+      background: "#fff",
       borderRadius: 8,
       boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
     }}
   >
     <DatePicker.RangePicker
       style={{ width: "100%", marginBottom: 12 }}
-      format="DD/MM/YYYY"
+      format="YYYY-MM-DD"
       value={tempFilters.dateRange}
       onChange={(value) =>
         setTempFilters((prev) => ({ ...prev, dateRange: value }))
@@ -90,9 +46,9 @@ const VehicleEntry: React.FC = () => {
         setTempFilters((prev) => ({ ...prev, status: value }))
       }
       options={[
-        { value: "all", label: "Todos" },
-        { value: "ingreso", label: "Ingresos" },
-        { value: "salida", label: "Salidas" },
+        { value: "INGRESOS", label: "INGRESOS" },
+        { value: "SALIDAS", label: "SALIDAS" },
+        { value: "TODOS", label: "TODOS" },
       ]}
     />
 
@@ -100,8 +56,13 @@ const VehicleEntry: React.FC = () => {
       type="primary"
       style={{ width: "100%" }}
       onClick={() => {
-        setFilters(tempFilters); // <-- aquí recién aplicás los filtros reales
-        console.log("Filtros aplicados:", tempFilters);
+        const [start, end] = tempFilters.dateRange || [];
+       const data: VehicleEntryFilter = {
+          ...(start && { startDate: start.format("YYYY-MM-DD") }),
+          ...(end && { endDate: end.format("YYYY-MM-DD") }),
+          ...(tempFilters.status && { statusFilter: tempFilters.status }),
+        };    
+        getAllVehicleEntries(data)
         setOpenDropDown(false);
       }}
     >
@@ -110,35 +71,30 @@ const VehicleEntry: React.FC = () => {
   </div>
   );
 
-  const filteredIngresos = ingresos.filter((item) => {
-  // Filtrar por estado
-  if (filters.status === "ingreso" && item.horaSalida) return false;
-  if (filters.status === "salida" && !item.horaSalida) return false;
+   useEffect(() => {
+    getAllVehicleEntries();
+  }, []);
 
-  // Filtrar por rango de fecha
-  if (filters.dateRange) {
-    const [start, end] = filters.dateRange;
-    const ingresoDate = dayjs("2025-02-10"); // 🔥 Luego lo reemplazas con la fecha REAL del ingreso
-
-    if (!ingresoDate.isBetween(start, end, "day", "[]")) return false;
-  }
-
-  return true;
-});
-
+  const getAllVehicleEntries = async (params?: VehicleEntryFilter) => {    
+    const result: ApiResponse<VehicleEntryResponseDto[]> | null =
+    await handleRequestAxios(dispatch, () => getAllVehicleEntriesService(params), {showSpinner: true});
+    if (result?.success) {
+      setDataSource(result?.data);      
+    }else{
+      setDataSource([]);
+    }
+  };
 
   const handleNuevoIngreso = () => {
     navigate(RoutePaths.VEHICLE_ENTRY_CREATE);
   };
 
-  const handleVerHistorial = (id: string) => {
+  const handleVerHistorial = (id: number) => {
     console.log('Ver historial de:', id);
-    // Aquí abres modal de historial
   };
 
   return (
     <div style={{ padding: 24 }}>
-      {/* Botones superiores */}
       <Row  style={{ marginBottom: 16 }}>
         <Col span={24}>
           <Button 
@@ -160,25 +116,25 @@ const VehicleEntry: React.FC = () => {
           <Button color="danger" variant="outlined" style={{color: "black", borderRadius: 15}}>
           <Space>
             <FilterOutlined />
-            Filtros
+              Filtros
             <DownOutlined />
             </Space>
             </Button>
         </Dropdown>
       </Row>
       <Row gutter={[16, 16]}>
-        {filteredIngresos.map((ingreso) => (
-          <Col xs={24} key={ingreso.id}>
+        {datasource.map((ingreso) => (
+          <Col xs={24} key={ingreso.entryId}>
             <CardList
-              nombre={ingreso.nombre}
-              horaIngreso={ingreso.horaIngreso}
-              horaSalida={ingreso.horaSalida}
-              placa={ingreso.placa}
-              imagen={ingreso.imagen}
-              modelo={ingreso.modelo}
-              color={ingreso.color}
-              tipo={ingreso.horaSalida ? 'salida' : 'ingreso'}
-              onVerHistorial={() => handleVerHistorial(ingreso.id)}
+              nombre={ingreso.clienteNombre}
+              horaIngreso={dayjs(ingreso.tiempos.ingreso, "HH:mm:ss").format("hh:mm A")}
+              horaSalida={dayjs(ingreso.tiempos.salida, "HH:mm:ss").format("hh:mm A")}
+              placa={ingreso.vehiculo.placa}
+              imagen={ingreso.vehiculo.marca}
+              modelo={ingreso.vehiculo.modelo}
+              color={ingreso.vehiculo.color}
+              tipo={ingreso.estado}
+              onVerHistorial={() => handleVerHistorial(ingreso.entryId)}
             />
           </Col>
         ))}
