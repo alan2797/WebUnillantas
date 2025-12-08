@@ -36,7 +36,7 @@ const RecoveryPage: React.FC = () => {
       showMessageApi: false
     });
     if(result?.success){
-      notification.success({message: "Se solicito la contraseña temporal correctamente"})
+      notification.success({message: "Se solicito la contraseña temporal correctamente", placement: "top"})
       navigate(RoutePaths.LOGIN);
       return;
     }

@@ -50,7 +50,11 @@ const InputText = <TFormValues extends Record<string, unknown>>({
               placeholder,
               value: (field.value ?? "") as string,
               onChange: field.onChange,
-              onBlur: field.onBlur,
+              onBlur: (e) => {
+                console.log("onblur compo")
+                field.onBlur(); // Mantiene la funcionalidad de react-hook-form
+                fieldConfig.onBlur?.(e.target.value); // Ejecuta tu callback personalizado
+              },
               size: 'large',
               prefix: prefix,
               suffix: suffix,

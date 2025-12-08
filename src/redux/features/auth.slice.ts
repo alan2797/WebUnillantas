@@ -5,7 +5,6 @@ import {
   sessionConfirmService,
 } from "../../services/sessions";
 import { authService, changePasswordTempService, permissionsUserService, recoveryUsernameService } from "../../services/auth";
-import { getAreasService, getPositionsService } from "../../services/catalogs";
 
 export interface AuthState {
   user: LoginResponseDto | null;
@@ -41,26 +40,6 @@ export const login = createAsyncThunk("auth/login", async (credentials: LoginReq
 export const changePassword = createAsyncThunk("auth/change-password", async (credentials: ChangePasswordDto, { rejectWithValue }) => {
   try {
     const response = await changePasswordTempService(credentials.password, credentials.token);
-    return response.data;
-  } catch (err: any) {
-    return rejectWithValue(err);
-  }
-});
-
-
-
-export const getAreas = createAsyncThunk("auth/getAreas", async (branchId: number, { rejectWithValue }) => {
-  try {
-    const response = await getAreasService(branchId);
-    return response.data;
-  } catch (err: any) {
-    return rejectWithValue(err);
-  }
-});
-
-export const getPositions = createAsyncThunk("auth/getPositions", async (areaId: number, { rejectWithValue }) => {
-  try {
-    const response = await getPositionsService(areaId);
     return response.data;
   } catch (err: any) {
     return rejectWithValue(err);

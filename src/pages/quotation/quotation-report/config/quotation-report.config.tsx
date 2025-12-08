@@ -5,19 +5,26 @@ import { FilterQuotationReport } from "../../../../utils/catalogs.constant";
 
 export const configFormFilters = (): FieldConfig<QuotationReportFilters>[] => [
      {
-        key: "branchId",
+        key: "divisionId",
         type: "select",
         label: "Sucursal",
         valueInitial: "",
-        options:[],
-        typeValue: "string",
+        options:[{
+            value: 1,
+            label: "Sucursal 1"
+        },
+        {
+            value: 2,
+            label: "Sucursal 2"
+        }],
+        typeValue: "number",
         placeholder: "Seleccionar",
         xs: 24,
         md: 6
 
     },
     {
-        key: "positionId",
+        key: "stationId",
         type: "select",
         typeValue: "string",
         label: "Estación",
@@ -56,7 +63,7 @@ export const configFormFilters = (): FieldConfig<QuotationReportFilters>[] => [
         md:6
     },
     {
-        key:"status",
+        key:"statusFilter",
         type:"checkbox",
         label:"Estado",
         options:FilterQuotationReport,

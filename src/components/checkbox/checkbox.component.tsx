@@ -18,6 +18,7 @@ const CheckboxGroupCustom = <TFormValues extends Record<string, any>>({
     styleContainer,
     displayMode = "text",
     direction = "vertical",
+    disabled = false
   } = fieldConfig;
 
   const renderOptionContent = (option: any, isChecked: boolean) => {
@@ -36,11 +37,12 @@ const CheckboxGroupCustom = <TFormValues extends Record<string, any>>({
             
             {/* Imagen */}
             <div className={styles.imageWrapper}>
-              <img 
+              {option.image && <img 
                 src={option.image} 
                 alt={option.label}
-                className={styles.optionImage}
-              />
+                className={styles.optionImage} 
+              />}
+              {!option.image && <label className="ms-1">{option.label}</label>}
             </div>
           </div>
         );
@@ -92,6 +94,7 @@ const CheckboxGroupCustom = <TFormValues extends Record<string, any>>({
                   : field.value || []
               }
               onChange={(checkedValues) => {
+                console.log(checkedValues);
                 if (singleSelect) {
                   const newValue = checkedValues.pop();
                   // Convertir a string siempre si typeValue es string
@@ -128,6 +131,7 @@ const CheckboxGroupCustom = <TFormValues extends Record<string, any>>({
                       key={String(opt.value)} 
                       value={opt.value}
                       className={checkboxClassName}
+                      disabled={disabled}
                     >
                       {renderOptionContent(opt, isChecked)}
                     </Checkbox>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Dropdown, theme, Tabs, Divider, Button, Badge, Input } from 'antd';
+import { Dropdown, theme, Tabs, Divider, Button, Badge, Input, Drawer } from 'antd';
 import type { TabsProps } from 'antd';
 import { 
   BellOutlined,
   DownOutlined, 
-  LogoutOutlined
+  LogoutOutlined,
+  MenuOutlined,
+  CloseOutlined
 } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +33,7 @@ const HeaderBar = () => {
   const [activeMainMenu, setActiveMainMenu] = useState<string>('');
   const [activeSubMenu, setActiveSubMenu] = useState<string>('');
   const [showSubNavigation, setShowSubNavigation] = useState<boolean>(false);
+  const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
 
   // Filtrar menús por permisos (puedes pasar los permisos reales aquí)
   const filteredMenu = filterMenuByPermissions(menuItems, []);
@@ -68,6 +71,7 @@ const HeaderBar = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
+    setDrawerVisible(false);
   };
 
   // Menú principal (Dropdown del usuario)
@@ -96,6 +100,7 @@ const HeaderBar = () => {
         setActiveSubMenu(menuItem.children[0].key as string);
       } else {
         setShowSubNavigation(false);
+        setDrawerVisible(false); // Cerrar drawer al navegar
         // Si no tiene subitems, navegar directamente
         if (key !== '/logout') {
           navigate(key);
@@ -109,6 +114,7 @@ const HeaderBar = () => {
   const handleSubMenuClick = (key: string) => {
     console.log(key);
     setActiveSubMenu(key);
+    setDrawerVisible(false); // Cerrar drawer al navegar
     if (key === '/logout') {
       dispatch(logout());
       navigate('/login');
@@ -124,33 +130,18 @@ const HeaderBar = () => {
     return activeMenu?.children || [];
   };
 
-  // Configurar las tabs con iconos
-  /* const tabItems: TabsProps['items'] = getActiveSubItems().map(subItem => ({
+  const tabItems: TabsProps['items'] = getActiveSubItems().map((subItem, index, arr) => ({
     key: subItem.key as string,
     label: (
-      <div className={styles.tabLabel}>
-        {subItem.icon}
-        <span>{subItem.label}</span>
+      <div className={styles.tabLabelWithDivider}>
+        <div className={styles.tabLabel}>
+          {subItem.icon}
+          <span>{subItem.label}</span>
+          <Divider type='vertical' style={{ margin:"0 10px"}}/>
+        </div>
       </div>
     ),
-  })); */
-  const tabItems: TabsProps['items'] = getActiveSubItems().map((subItem, index, arr) => ({
-  key: subItem.key as string,
-  label: (
-    <div className={styles.tabLabelWithDivider}>
-      <div className={styles.tabLabel}>
-        {subItem.icon}
-        <span>{subItem.label}</span>
-         <Divider type='vertical' style={{ margin:"0 10px"}}/>
-      </div>
-           
-
-      {/* Divider vertical entre items excepto el último */}
-      {/* {index !== arr.length - 1 && <div className={styles.vDivider} />} */}
-    </div>
-  ),
-}));
-
+  }));
 
   return (
     <div className={styles.headerContainer}>
@@ -167,18 +158,20 @@ const HeaderBar = () => {
           <span className={styles.company}>UNILLANTAS</span>
         </div>         
 
+        {/* CENTRO - Navegación Desktop */}
         <div className={styles.center}>
-          <Search
+          {/*<Search
             placeholder="Buscar..."
             style={{ width: 200, marginRight: 16 }}
             allowClear
-          />
+            className={styles.desktopSearch}
+          />*/}
           <div className={styles.mainNavigation}>
             {mainMenuItems.map(item => (
               <div
                 key={item.key as string}
                 className={`${styles.menuItem} ${
-                  activeMainMenu === item.key ? styles.menuItemActive : 'asds'
+                  activeMainMenu === item.key ? styles.menuItemActive : ''
                 }`}
                 onClick={() => handleMainMenuClick(item.key as string)}
               >
@@ -191,8 +184,18 @@ const HeaderBar = () => {
           </div>
         </div>
 
+        {/* DERECHA - Menú Hamburguesa y Usuario */}
         <div className={styles.right}>
-          <Dropdown menu={userMenu} trigger={['click']}>
+          {/* Menú Hamburguesa Mobile */}
+          <Button
+            type="text"
+            icon={<MenuOutlined style={{ fontSize: '20px' }} />}
+            onClick={() => setDrawerVisible(true)}
+            className={styles.hamburgerButton}
+          />
+
+          {/* Usuario Desktop */}
+          <Dropdown menu={userMenu} trigger={['click']} className={styles.desktopUser}>
             <div className={styles.userBox}>
               <img
                 src="https://i.pravatar.cc/40"
@@ -210,26 +213,122 @@ const HeaderBar = () => {
         </div>
       </div>
       
+      {/* Subnavegación Desktop */}
       {showSubNavigation && getActiveSubItems().length > 0 && (
         <div className={styles.subNavigation}>
           <div className={styles.subNavigationCenter}>
             <Tabs
               activeKey={activeSubMenu}
               onChange={handleSubMenuClick}
-              onTabClick={(key) => {
-                console.log("Click en tab:", key);
-                setActiveSubMenu(key);
-                handleSubMenuClick(key); // opcional
-              }}
               items={tabItems}
               type="card"
-              size="small"
+              size="middle"
               className={styles.subTabs}
             />
             <Divider type='vertical'/>
           </div>
         </div>
       )}
+
+      {/* Drawer Mobile */}
+      <Drawer
+        title={
+          <div className={styles.drawerHeader}>
+            <img
+              src={`${env.baseHref}unillanta.svg`}
+              alt="UNILLANTAS logo"
+              className={styles.drawerLogo}
+            />
+            <span>UNILLANTAS</span>
+          </div>
+        }
+        placement="left"
+        onClose={() => setDrawerVisible(false)}
+        open={drawerVisible}
+        width={280}
+        className={styles.mobileDrawer}
+        styles={{
+          header: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingRight: '16px'
+          }
+        }}
+      >
+        {/* Búsqueda Mobile */}
+       {/* <div className={styles.drawerSearch}>
+          <Search
+            placeholder="Buscar..."
+            allowClear
+          />
+        </div>*/}
+
+        {/* Usuario Mobile */}
+        <div className={styles.drawerUser}>
+          <img
+            src="https://i.pravatar.cc/40"
+            alt="user"
+            className={styles.drawerAvatar}
+          />
+          <div className={styles.drawerUserInfo}>
+            <span className={styles.drawerUserName}>René Ruiz</span>
+            <span className={styles.drawerUserEmail}>rene.ruiz@unillantas.com</span>
+          </div>
+        </div>
+
+        <Divider />
+
+        {/* Menú Principal Mobile */}
+        <div className={styles.drawerMenu}>
+          {mainMenuItems.map(item => (
+            <div key={item.key as string}>
+              <div
+                className={`${styles.drawerMenuItem} ${
+                  activeMainMenu === item.key ? styles.drawerMenuItemActive : ''
+                }`}
+                onClick={() => handleMainMenuClick(item.key as string)}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </div>
+
+              {/* Submenú si está activo */}
+              {activeMainMenu === item.key && item.children && item.children.length > 0 && (
+                <div className={styles.drawerSubMenu}>
+                  {item.children.map(subItem => (
+                    <div
+                      key={subItem.key as string}
+                      className={`${styles.drawerSubMenuItem} ${
+                        activeSubMenu === subItem.key ? styles.drawerSubMenuItemActive : ''
+                      }`}
+                      onClick={() => handleSubMenuClick(subItem.key as string)}
+                    >
+                      {subItem.icon}
+                      <span>{subItem.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <Divider />
+
+        {/* Logout Mobile */}
+        <div className={styles.drawerLogout}>
+          <Button
+            type="text"
+            icon={<LogoutOutlined />}
+            onClick={handleLogout}
+            block
+            danger
+          >
+            Cerrar sesión
+          </Button>
+        </div>
+      </Drawer>
     </div>
   );
 };

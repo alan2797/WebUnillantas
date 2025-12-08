@@ -1,29 +1,29 @@
 import moment from "moment";
 import type { FieldConfig } from "../../../../interfaces/components.interface";
 import type { VehicleEntryCreate } from "../../../../interfaces/vehicle-entry.interface";
+import { documentTypeOptions, vehicleAniosOptions } from "../../../../utils/catalogs.constant";
 
-
-
-export const configForm= (): FieldConfig<VehicleEntryCreate>[] => [
-     {
+export const configForm= (callbacks?: {
+  onLicencePlateBlur?: (value: string) => void;
+}): FieldConfig<VehicleEntryCreate>[] => [
+    {
         key: "documentType",
         type: "select",
         label: "Tipo de Documento",
         valueInitial: "",
-        options:[],
+        options: [],
         typeValue: "string",
         xs: 24,
         md:8
-
     },
     {
         key: "licencePlateNumber",
         type: "text",
         typeValue: "string",
-        label: "Placa",
+        label: "Número ID del Vehiculo",
         valueInitial: "",
         xs: 24,
-        md:8
+        md:8,
     },
     {
         key:"entryTime",
@@ -48,9 +48,9 @@ export const configForm= (): FieldConfig<VehicleEntryCreate>[] => [
         key:"vehicleYear",
         type:"select",
         label:"Año",
-        options:[],
+        options: vehicleAniosOptions,
         valueInitial:"",
-        typeValue:"string",
+        typeValue:"number",
         xs:24,
         md:8
     },
@@ -60,7 +60,7 @@ export const configForm= (): FieldConfig<VehicleEntryCreate>[] => [
         label:"Tipo de Vehiculo",
         options:[],
         valueInitial:"",
-        typeValue:"string",
+        typeValue:"number",
         xs:24,
         md:8
     },
@@ -77,11 +77,7 @@ export const configForm2= (): FieldConfig<VehicleEntryCreate>[] => [
   singleSelect: true,
   direction:"horizontal",
   xs: 24,
-  options: [
-    { value: "llanta", label: "Llanta"},
-    { value: "servicio", label: "Servicio"},
-    { value: "ambos", label: "Ambos"},
-  ],
+  options: [],
   styleContainer: {
     border: "1px solid #151515",
     borderRadius: "8px",
@@ -98,11 +94,7 @@ export const configForm2= (): FieldConfig<VehicleEntryCreate>[] => [
   singleSelect: true,
   direction:"horizontal",
   xs: 24,
-  options: [
-    { value: "1", label: "Instalacion en Sucursal"},
-    { value: "2", label: "Para Llevar"},
-    { value: "3", label: "Despacho"},
-  ],
+  options: [],
   styleContainer: {
     border: "1px solid #151515",
     borderRadius: "8px",

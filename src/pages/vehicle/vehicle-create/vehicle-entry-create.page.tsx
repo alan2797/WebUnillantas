@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Card, Checkbox, Col, Divider, Dropdown, Form, Input, Row, Select, Space } from "antd";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Button, Card, Checkbox, Col, Divider, Dropdown, Form, Input, notification, Row, Select, Space } from "antd";
 import {
   DownOutlined,
   FilterOutlined,
@@ -8,8 +8,8 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { useNavigate } from "react-router-dom";
 import ButtonCustom from "../../../components/button/button.component";
-import type { VehicleEntryCreate } from "../../../interfaces/vehicle-entry.interface";
-import type { FieldConfig } from "../../../interfaces/components.interface";
+import type { MarcasColoresData, OpcionesMotivosPedidos, OpcionesTipoDocumento, OpcionesTiposVehiculo, VehicleEntryCreate, VehiculoData } from "../../../interfaces/vehicle-entry.interface";
+import type { ApiResponse, FieldConfig } from "../../../interfaces/components.interface";
 import { configForm, configForm2 } from "./configs/vehicle-entry-create.config";
 import {
   buildDefaultValues,
@@ -22,38 +22,13 @@ import CustomSelect from "../../../components/select/select.component";
 import ModalForm from "../../../components/modals/modal-form.component";
 import { IconCheckupList, IconSend, IconTimelineEvent, IconTransform } from "@tabler/icons-react";
 import { useForm } from "react-hook-form";
-
-const brandsOptions = [
-  { value: "kia", label: "KIA", image: "https://logo.clearbit.com/suzuki.fr" },
-  {
-    value: "toyota",
-    label: "TOYOTA",
-    image: "https://logo.clearbit.com/toyotacomauto.com",
-  },
-  {
-    value: "chery",
-    label: "CHERY",
-    image: "https://logo.clearbit.com/chery.cn",
-  },
-  {
-    value: "chery22",
-    label: "CHERY",
-    image: "https://logo.clearbit.com/chery.cn",
-  },
-  {
-    value: "chery3",
-    label: "CHERY",
-    image: "https://logo.clearbit.com/chery.cn",
-  },
-];
-
-const colorsOptions = [
-  { value: "azul", label: "Azul", color: "#4A90E2" },
-  { value: "rojo", label: "Rojo", color: "red" },
-  { value: "amarillo", label: "Amarillo", color: "yellow" },
-  { value: "verde", label: "Verde", color: "green" },
-  { value: "rosado", label: "Rosado", color: "pink" },
-];
+import { handleRequestAxios } from "../../../utils/handle-request-axios";
+import { getInitialDataBrandColorService, searchVehicleService } from "../../../services/vehicle-entry";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../../redux/store";
+import { getBranchesService, getBrandsService, getColorsService, getDocumentTypesService, getEntryOptionsService, getModelsService, getVehicleTypesService } from "../../../services/catalogs";
+import { toggleMultipleFieldsDisabled, updateFormFieldsWithOptions } from "../../../utils/form-config.util";
+import { RoutePaths } from "../../../utils/constants";
 
 const VehicleEntryCreate: React.FC = () => {
   const [valueFilterBrand, setValueFilterBrand] = useState("");
@@ -62,10 +37,13 @@ const VehicleEntryCreate: React.FC = () => {
   const [openDropDownFilterColor, setOpenDropDownFilterColor] = useState(false);
   const [cancelReasons, setCancelReasons] = useState<string[]>([]);
   const [otherReason, setOtherReason] = useState("");
-
-
-
   const [openModalCancel, setOpenModalCancel] = useState(false);
+  const [brandsOptions, setBrandsOptions] = useState([]);
+  const [colorsOptions, setColorsOptions] = useState([]);
+  const [modelsOptions, setModelsOptions] = useState([]);
+  const [vehicleExist, setVehicleExist] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
   const menuFilterBrand = (
   <div
     style={{
@@ -80,6 +58,7 @@ const VehicleEntryCreate: React.FC = () => {
       value={valueFilterBrand}
       style={{ width: "100%", marginBottom: 12 }}
       onChange={(e) => setValueFilterBrand(e.target.value)}
+      placeholder="Buscar Marca"
     />
 
     <Button
@@ -88,6 +67,7 @@ const VehicleEntryCreate: React.FC = () => {
       onClick={(e) => {
         e.stopPropagation();
         console.log("Filtros aplicados:", valueFilterBrand);
+        searchBrand(valueFilterBrand);
         setOpenDropDownFilterBrand(false);
       }}
     >
@@ -109,6 +89,7 @@ const VehicleEntryCreate: React.FC = () => {
       value={valueFilterColor}
       style={{ width: "100%", marginBottom: 12 }}
       onChange={(e) => setValueFilterColor(e.target.value)}
+      placeholder="Buscar Color"
     />
 
     <Button
@@ -117,6 +98,7 @@ const VehicleEntryCreate: React.FC = () => {
       onClick={(e) => {
         e.stopPropagation();
         console.log("Filtros aplicados:", valueFilterColor);
+        searchColors(valueFilterColor);
         setOpenDropDownFilterColor(false);
       }}
     >
@@ -125,11 +107,11 @@ const VehicleEntryCreate: React.FC = () => {
   </div>
   );
   
-  // Combinar ambas configuraciones en una sola
-  const [configFormSchema] = useState<FieldConfig<VehicleEntryCreate>[]>(configForm());
-  const [configForm2Schema] = useState<FieldConfig<VehicleEntryCreate>[]>(configForm2());
+  const [configFormSchema, setConfigFormSchema] = useState<FieldConfig<VehicleEntryCreate>[]>(configForm());
+  const [configForm2Schema, setConfigForm2Schema] = useState<FieldConfig<VehicleEntryCreate>[]>(configForm2());
+    // ✅ useRef para mantener el callback actualizado
+  const validateLicencePlateRef = useRef<((value: string) => Promise<void>) | null>(null);
   
-  // Combinar ambos esquemas de validación
   const combinedSchema = [...configFormSchema, ...configForm2Schema];
   
   dayjs.extend(isBetween);
@@ -143,17 +125,385 @@ const VehicleEntryCreate: React.FC = () => {
     mode: "onChange",
   });
 
+  const handleBrandChange = useCallback(async (brandId: number | null) => {
+    if (brandId) {
+      await getModelsByBrand(brandId);
+    }
+  }, []);
+
+  const watchBrand = form.watch("vehicleBrand");
+  const watchDocumentType = form.watch("documentType");
+
+  useEffect(() => {
+    if (watchBrand) {
+      handleBrandChange(Number(watchBrand));
+    }
+  }, [watchBrand, handleBrandChange]);
+
+  useEffect(() => {
+    if (watchDocumentType) {
+      console.log("cambiando ejecutandop")
+
+      const updatedConfig = configFormSchema.map(field => {
+        if (field.key === "licencePlateNumber") {
+          let mask = "";
+          let maxLength = 10;
+          let type = "mask";
+          let validations: any[] = [
+            {
+              type: "required",
+              message: "El Número ID del Vehiculo es requerido"
+            }
+          ];
+          
+          switch(watchDocumentType) {
+            case 'PLACA':
+              type = "mask";
+              mask = "*-*****"; // a = letra/dígito, 9 = sólo dígito
+              maxLength = 8;
+              validations.push({
+                type: "matches", 
+                regex: /^[A-Z0-9-]{6,20}$/i,
+                message: "Formato de placa inválido. Use: X-XXXXX (Ej: P-12344)"
+              });
+              break;
+              
+            case 'VIN':
+              type = "mask";
+              mask = "aaaaaaaaaaaaaaaaa"; // 17 posiciones
+              maxLength = 17;
+              validations.push({
+                type: "matches", 
+                regex: /^[A-HJ-NPR-Z0-9]{17}$/i, // Sin I, O, Q
+                message: "El VIN debe tener exactamente 17 caracteres alfanuméricos (sin I, O, Q)"
+              });
+              break;
+              
+            case 'POLIZA':
+              type = "mask";
+              mask = "***-***-******"; // Máscara flexible
+              maxLength = 15;
+              validations.push(
+                {
+                  type: "minLength",
+                  value: 6,
+                  message: "La póliza debe tener al menos 6 caracteres"
+                },
+                {
+                  type: "maxLength", 
+                  value: 20,
+                  message: "La póliza no puede tener más de 20 caracteres"
+                },
+                {
+                  type: "matches",
+                  regex: /^[A-Z0-9-]{6,20}$/i,
+                  message: "Formato de póliza inválido. Solo letras, números y guiones"
+                }
+              );
+              break;
+              
+            default:
+              // Si no hay tipo seleccionado
+              type = "text";
+              mask = "";
+              maxLength = 20;
+              validations = []; // Limpiar validaciones hasta que seleccione tipo
+          }
+          
+          return {
+            ...field,
+            mask: mask,
+            max: maxLength, // O usa maxLength si es el nombre correcto de la propiedad
+            type: type,
+            placeholder: getPlaceholderByDocType(watchDocumentType ?? ""),
+            validations: validations
+          };
+        }
+      return field;
+    });
+    
+    setConfigFormSchema(updatedConfig as any);
+    form.setValue("documentNumber", "");
+    form.trigger("documentNumber");
+    }
+  }, [watchDocumentType]);
+  const getPlaceholderByDocType = (docType: string): string => {
+    switch(docType) {
+      case 'PLACA':
+        return "PBA-1234";
+      case 'VIN':
+        return "12345678901234";
+      case 'POLIZA':
+        return "PLZ-2024-ABC123";
+      default:
+        return "Ingrese el número";
+    }
+  };
+
+  const validateLicencePlate = useCallback(async (value: string) => {
+    if (!value || !watchDocumentType) {
+      return;
+    }
+    
+    console.log("Validando con tipo de documento:", watchDocumentType, "y valor:", value);
+    
+      const result: ApiResponse<VehiculoData> | null = await handleRequestAxios(
+        dispatch, 
+        () => searchVehicleService(watchDocumentType, value), 
+        { showSpinner: true, showMessageApi: true }
+      );
+      
+      if (result?.success) {
+        console.log("Resultado de búsqueda:", result.data);
+        
+        // Aquí puedes llenar los campos del formulario con los datos encontrados
+        if (result.data) {
+          // Ejemplo de cómo podrías llenar los campos
+          if (result.data.vehiculo.marca.marca_id) {
+            form.setValue("vehicleBrand", result.data.vehiculo.marca.marca_id);
+            if (!brandsOptions.find((item: any) => item.value == result.data.vehiculo.marca.marca_id)) {
+              searchBrand(result.data.vehiculo.marca.nombre);
+            }
+          }
+          if (result.data.vehiculo.modelo.modelo_id) {
+            form.setValue("vehicleModel", result.data.vehiculo.modelo.modelo_id);
+          }
+          if (result.data.vehiculo.color.color_id) {
+            form.setValue("vehicleColor", result.data.vehiculo.color.color_id);
+            if (!colorsOptions.find((item: any) => item.value == result.data.vehiculo.color.color_id)) {
+              searchColors(result.data.vehiculo.color.nombre);
+            }
+          }
+          if (result.data.vehiculo.anio) {
+            form.setValue("vehicleYear", result.data.vehiculo.anio);
+          }
+          if (result.data.cliente) {
+            form.setValue("currentVehicleOwner", result.data.cliente.nombre_completo);
+          }
+          if (result.data.vehiculo.tipo_vehiculo) {
+            form.setValue("vehicleType", result.data.vehiculo.tipo_vehiculo.tipo_vehiculo_id);
+          }
+          // Deshabilitar campos del vehículo
+          const vehiculoFields: string[] = [
+            'vehicleBrand',    // marca
+            'vehicleModel',    // modelo  
+            'vehicleYear',     // año
+            'vehiclePlate',    // placa
+            'vehicleColor',    // color
+            'vehicleType',     // tipo de vehículo
+            'currentVehicleOwner',
+            'documentType'
+          ];
+
+          // Actualizar el estado de configForm
+          setConfigFormSchema(prevConfig => 
+            toggleMultipleFieldsDisabled(prevConfig, vehiculoFields, true)
+          );
+          setVehicleExist(true);
+      
+        }else{
+          setVehicleExist(false);
+          const vehiculoFields: string[] = [
+            'vehicleBrand',    // marca
+            'vehicleModel',    // modelo  
+            'vehicleYear',     // año
+            'vehiclePlate',    // placa
+            'vehicleColor',    // color
+            'vehicleType',     // tipo de vehículo
+            'currentVehicleOwner',
+            'documentType'
+          ];
+
+          // Actualizar el estado de configForm
+          setConfigFormSchema(prevConfig => 
+            toggleMultipleFieldsDisabled(prevConfig, vehiculoFields, false)
+          );
+        }
+      } 
+    
+  }, [watchDocumentType, dispatch, form]);
+
+ // ✅ Actualizar la referencia cuando cambia la función
+  useEffect(() => {
+    validateLicencePlateRef.current = validateLicencePlate;
+    console.log("🔄 Referencia de validación actualizada");
+  }, [validateLicencePlate]);
+
+  // ✅ Agregar el callback SOLO UNA VEZ al inicio
+  useEffect(() => {
+    console.log("🎬 Inicializando callback de onBlur");
+    setConfigFormSchema((prevConfig) =>
+      prevConfig.map((field) => {
+        if (field.key === "licencePlateNumber") {
+          return {
+            ...field,
+            onBlur: (value: string) => {
+              console.log("🎯 onBlur wrapper ejecutado con valor:", value);
+              validateLicencePlateRef.current?.(value);
+            }
+          };
+        }
+        return field;
+      })
+    );
+  }, []); // ⚠️ Solo una vez al montar
+
+  useEffect(() => {
+    getInitialData();
+    getReasonAndDelivery();
+    getDocumentTypes();
+    getVehicleTypes();
+  }, [])
+
+  const getInitialData = async () => {
+    const result: ApiResponse<MarcasColoresData> | null = await handleRequestAxios(dispatch, () => getInitialDataBrandColorService(), {
+      showSpinner: false
+    })
+    if(result?.success){
+      console.log(result);
+      const brands: any = result.data.marcas.map((item) => {
+        return {
+          value: item.id,
+          label: item.nombre,
+          image: item.logoUrl,
+        }
+      });
+      console.log(brands);
+      setBrandsOptions(brands);
+      const colors: any = result.data.colores.map((item) => {
+        return {
+          value: item.id,
+          label: item.nombre,
+          color: item.colorHex,
+        }
+      });
+      setColorsOptions(colors);
+    }
+  }
+
+  const getReasonAndDelivery = async() => {
+    const result: ApiResponse<OpcionesMotivosPedidos> | null = await handleRequestAxios(dispatch, () => getEntryOptionsService(), {
+      showSpinner: false
+    })
+    if(result?.success){
+      console.log(result.data);
+      setConfigForm2Schema((prev: any) =>
+        updateFormFieldsWithOptions(prev, [
+          {
+            fieldKey: "visitReason",
+            data: result.data.motivosVisita ?? [],
+            labelKey: "label",
+            valueKey: "value",
+          },
+          {
+            fieldKey: "orderType",
+            data: result.data.tiposPedido ?? [],
+            labelKey: "label",
+            valueKey: "value",
+          },
+        ])
+      );
+    }
+  }
+
+  const getDocumentTypes = async () => {
+    const result: ApiResponse<OpcionesTipoDocumento> | null = await handleRequestAxios(dispatch, () => getDocumentTypesService(), {
+      showSpinner: false
+    })
+    if(result?.success){
+      console.log(result.data.tiposBusqueda)
+      setConfigFormSchema((prev: any) =>
+        updateFormFieldsWithOptions(prev, [
+          {
+            fieldKey: "documentType",
+            data: result.data.tiposBusqueda ?? [],
+            labelKey: "label",
+            valueKey: "value",
+          },
+        ])
+      );
+    }
+  }
+
+  const getVehicleTypes = async () => {
+    const result: ApiResponse<OpcionesTiposVehiculo> | null = await handleRequestAxios(dispatch, () => getVehicleTypesService(), {
+      showSpinner: false
+    })
+    if(result?.success){
+      console.log(result.data.results)
+      setConfigFormSchema((prev: any) =>
+        updateFormFieldsWithOptions(prev, [
+          {
+            fieldKey: "vehicleType",
+            data: result.data.results ?? [],
+            labelKey: "nombre",
+            valueKey: "tipo_vehiculo_id",
+          },
+        ])
+      );
+    }
+  }
+
+  const getModelsByBrand = async(brandId: number) => {
+    const result: ApiResponse<any> | null = await handleRequestAxios(dispatch, () => getModelsService(brandId), {
+      showSpinner: true
+    })
+    if(result?.success){
+      console.log(result.data.results);
+      const models = result.data.results.map((item: any) => ({
+        value: item.modelo_id,
+        label: item.nombre
+      }))
+      setModelsOptions(models)
+    }
+  }
+
+  const searchBrand = async (search?: string) => {
+    const result: ApiResponse<any> | null = await handleRequestAxios(dispatch, () => getBrandsService(search), {
+      showSpinner: false
+    });
+    if(result?.success){
+      console.log(result.data);
+      const brands: any = result.data.results.slice(0, 5).map((item: any) => {
+        return {
+          value: item.marca_id,
+          label: item.nombre,
+          image: null,
+        }
+      });
+      console.log(brands);
+      setBrandsOptions(brands);
+    }
+  }
+
+  const searchColors = async (search?: string) => {
+    const result: ApiResponse<any> | null = await handleRequestAxios(dispatch, () => getColorsService(search), {
+      showSpinner: false
+    });
+    if(result?.success){
+      console.log(result.data);
+      const colors: any = result.data.results.slice(0, 5).map((item: any) => {
+        return {
+          value: item.color_id,
+          label: item.nombre,
+        }
+      });
+      console.log(colors);
+      setColorsOptions(colors);
+    }
+  }
+
   const onSubmit = (data: VehicleEntryCreate) => {
     console.log("Datos recibidos:", data);
     console.log("📋 Todos los valores del form:", form.getValues());
   };
 
- const cancelQuotation = () => {
-  console.log("Motivos seleccionados:", cancelReasons);
-  console.log("Otro motivo:", otherReason);
-  setCancelReasons([]);
-  setOtherReason("");
-};
+  const cancelQuotation = () => {
+    console.log("Motivos seleccionados:", cancelReasons);
+    console.log("Otro motivo:", otherReason);
+    setCancelReasons([]);
+    setOtherReason("");
+  };
 
   return (
     <div className="p-0 p-md-4">
@@ -196,7 +546,7 @@ const VehicleEntryCreate: React.FC = () => {
           </Col>
         </Row>
 
-        <Row justify={"start"} gutter={16}>
+       {vehicleExist && <Row justify={"start"} gutter={16}>
           <Col xs={24} md={12} lg={6} xl={4} xxl={3}>
             <ButtonCustom
               block
@@ -220,11 +570,10 @@ const VehicleEntryCreate: React.FC = () => {
               icon={<IconTimelineEvent/>}
               text="Historial"
               onClick={()=>{
-
               }}
             />
           </Col>
-        </Row>
+        </Row>}
         <Divider />
         <Row gutter={10} >
           <Col xs={24} lg={12} className="mb-3">
@@ -249,7 +598,7 @@ const VehicleEntryCreate: React.FC = () => {
                   key: "vehicleBrand",
                   label: "",
                   type: "checkbox",
-                  typeValue: "string",
+                  typeValue: "number",
                   valueInitial: "",
                   options: brandsOptions,
                   direction: "horizontal",
@@ -261,7 +610,8 @@ const VehicleEntryCreate: React.FC = () => {
                     borderRadius: "8px",
                     marginTop: "5px",
                     padding: "8px 0px 8px 0px"
-                  }
+                  },
+                  disabled: vehicleExist
                 }}
                 control={form.control}
                 error={form.formState.errors.vehicleBrand?.message}
@@ -273,9 +623,11 @@ const VehicleEntryCreate: React.FC = () => {
                   type: "select",
                   label: "",
                   placeholder: "Seleccionar Modelo",
-                  options: [],
+                  options: modelsOptions,
                   valueInitial: "",
                   typeValue: "string",
+                  showSearch: true,
+                  disabled: vehicleExist
                 }}
                 control={form.control} 
                 error={form.formState.errors.vehicleModel?.message}
@@ -301,7 +653,7 @@ const VehicleEntryCreate: React.FC = () => {
                   key: "vehicleColor",
                   label: "",
                   type: "checkbox",
-                  typeValue: "string",
+                  typeValue: "number",
                   valueInitial: "",
                   options: colorsOptions,
                   direction: "horizontal",
@@ -313,7 +665,8 @@ const VehicleEntryCreate: React.FC = () => {
                     borderRadius: "8px",
                     marginTop: "5px",
                     padding: "8px 0px 8px 0px"
-                  }
+                  },
+                  disabled: vehicleExist
                 }}
                 control={form.control}
                 error={form.formState.errors.vehicleColor?.message}
@@ -419,6 +772,8 @@ const VehicleEntryCreate: React.FC = () => {
             onClick: () => {
               setOpenModalCancel(false)
               cancelQuotation();
+              navigate(RoutePaths.VEHICLE_ENTRY);
+              notification.success({message: "Cotización Cancelada", placement:"top"})
             },
             className: "bg-primary-antd",
             icon: <IconSend />,

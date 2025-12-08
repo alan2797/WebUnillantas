@@ -11,6 +11,33 @@ export const rolOptions = [
 ]
 
 export const FilterQuotationReport =[
-  { value: "1", label: "Cerrado" },
-  { value: "2", label: "Facturado" },
+  { value: "CERRADO", label: "Cerrado" },
+  { value: "FACTURADO", label: "Facturado" },
 ]
+
+export const documentTypeOptions = [
+  {
+    value: "PLACA",
+    label: "Placa"
+  },
+  {
+    value: "POLIZA",
+    label: "Póliza"
+  },
+  {
+    value: "VIN",
+    label: "VIN"
+  },
+]
+
+export const getVehicleYearOptions = (startYear = 1980) => {
+  const currentYear = new Date().getFullYear();
+  return Array.from(
+    { length: currentYear - startYear + 1 },
+    (_, index) => ({
+      value: currentYear - index,
+      label: (currentYear - index).toString()
+    })
+  );
+};
+export const vehicleAniosOptions = getVehicleYearOptions();

@@ -32,7 +32,13 @@ const InputMaskCustom = <TFormValues extends Record<string, unknown>>({
               const rawValue = e.target.value.replace(/_/g, '').trim();
               field.onChange(rawValue);
             }}
-            onBlur={field.onBlur}
+            onBlur={(e) => {
+              field.onBlur(); 
+              if (fieldConfig.onBlur) {
+                const rawValue = e.target.value.replace(/_/g, '').trim();
+                fieldConfig.onBlur(rawValue);
+              }
+            }}
             disabled={disabled}
           >
             {/* @ts-ignore - InputMask pasa las props al Input */}

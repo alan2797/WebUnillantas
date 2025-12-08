@@ -100,7 +100,6 @@
   padding: 0px 8px;
   min-width: 90px;
   border: 2px solid transparent;
-  justify-content: space-between;
   border-radius: 12px;
   cursor: pointer;
 }
@@ -142,12 +141,12 @@
 }
 
 .imageWrapper {
-  width: 40px;
-  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-shrink: 0;
+  
 }
 
 .imageWrapper .optionImage {
@@ -156,6 +155,7 @@
   max-width: 40px;
   max-height: 40px;
   object-fit: contain;
+  margin-left: 5px;
 }
 
 .colorCard {
@@ -224,8 +224,8 @@
   }
 
   .imageWrapper {
-    width: 40px;
-    height: 32px;
+    min-width: 40;
+    min-height: 32;
   }
 
   .imageWrapper .optionImage {
@@ -242,7 +242,6 @@
     font-size: 13px;
   }
 }
-/* Muestra el checkbox cuando NO tiene la clase hiddenCheckbox */
 .checkboxGroup :global(.ant-checkbox-wrapper):not(.hiddenCheckbox) :global(.ant-checkbox) {
     display: inline-block !important;
 }

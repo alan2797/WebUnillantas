@@ -7,14 +7,14 @@ export const configForm = (): FieldConfig<LoginRequestDto>[] => [
     key: "username",
     type: "text",
     label: "Usuario",
-    placeholder: "ej. jhon.doe@unillantas.com",
+    placeholder: "ej. usuario 123",
     valueInitial: "",
     typeValue: "string",
     xs: "12",
     prefix: <UserOutlined style={{color:"#A4A4A4"}}/>,
     validations: [
-      { type: "required", message: "El email es obligatorio" },
-      { type: "min", value: 3, message: "Mínimo 3 caracteres" }
+      { type: "required", },
+      { type: "min", value: 3 }
     ],
   },
 
@@ -28,8 +28,8 @@ export const configForm = (): FieldConfig<LoginRequestDto>[] => [
     xs: "12",
     prefix: <LockOutlined style={{color:"#A4A4A4"}}/>,
     validations: [
-      { type: "required", message: "La contraseña es obligatoria" },
-      { type: "min", value: 3, message: "Mínimo 3 caracteres" },
+      { type: "required"},
+      { type: "min", value: 3 },
     ],
   },
 ];

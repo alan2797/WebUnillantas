@@ -15,7 +15,7 @@ export const validatePasswordInRealTime = (password: string, passwordConfirm?: s
   const validations: PasswordValidation[] = [
     {
       type: "length",
-      message: "Debe ser 8 caracteres",
+      message: "Debe ser 8 caracteres mínimo",
       isValid: password.length >= 8
     },
     {

@@ -88,18 +88,30 @@ const ChangeTemporaryPassword: React.FC = () => {
 
           return (
             <div style={{ display: "flex", gap: 6, margin: "4px 0 16px" }}>
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  style={{
-                    flex: 1,
-                    height: 6,
-                    borderRadius: 3,
-                    backgroundColor: i <= level ? "#ff4d4f" : "#000",
-                    transition: "background-color 0.3s",
-                  }}
-                />
-              ))}
+              {[1, 2, 3].map((i) => {
+                // Determinar el color según la posición y el nivel
+                let backgroundColor;
+                if (i === 1) { // Primer círculo (rojo - bajo)
+                  backgroundColor = i <= level ? "#ff4d4f" : "#333";
+                } else if (i === 2) { // Segundo círculo (amarillo - medio)
+                  backgroundColor = i <= level ? "#ffcc00" : "#333";
+                } else { // Tercer círculo (verde - alto)
+                  backgroundColor = i <= level ? "#52c41a" : "#333";
+                }
+                
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      flex: 1,
+                      height: 6,
+                      borderRadius: 3,
+                      backgroundColor: backgroundColor,
+                      transition: "background-color 0.3s",
+                    }}
+                  />
+                );
+              })}
             </div>
           );
         })()}

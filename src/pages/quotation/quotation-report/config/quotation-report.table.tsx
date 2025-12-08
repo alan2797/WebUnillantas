@@ -1,5 +1,5 @@
 import type { ColumnsType } from "antd/es/table";
-import type { QuotationReportTable } from "../../../../interfaces/quotation.interface";
+import type { CotizacionItem, QuotationReportTable } from "../../../../interfaces/quotation.interface";
 import { Link } from "react-router-dom";
 import { Tooltip } from "antd";
 import {
@@ -9,18 +9,18 @@ import {
   IconInfoCircleFilled,
 } from "@tabler/icons-react";
 
-const getStatusIcon = (stat: string) => {
-  switch (stat.toLowerCase()) {
-    case "abierta":
+const getStatusIcon = (stat: boolean) => {
+  switch (stat) {
+    case false:
       return <IconFileX size={35} style={{ color: "#EC0127" }} />;
-    case "cerrada":
+    case true:
       return <IconFileCheck size={35} style={{ color: "#1FC16B" }} />;
     default:
       return <IconFilePlus size={35} style={{ color: "#d9d9d9" }} />;
   }
 };
 
-export const columns: ColumnsType<QuotationReportTable> = [
+export const columns: ColumnsType<CotizacionItem> = [
   {
     title: (
       <div style={{ display: "flex", alignItems: "center", justifyContent:"center", gap: 5, textAlign:"left" }}>
@@ -37,12 +37,12 @@ export const columns: ColumnsType<QuotationReportTable> = [
         </Tooltip>
       </div>
     ),
-    dataIndex: "quotationCode",
-    key: "quotationCode",
+    dataIndex: "codigoCotizacion",
+    key: "codigoCotizacion",
     align: "center",
     render: (value, record) => (
       <Link
-        to={`/cotizaciones/${record.id}`}
+        to={`/cotizaciones/${123}`}
         className="text-primary-antd"
         style={{ fontWeight: "600" }}
       >
@@ -52,8 +52,8 @@ export const columns: ColumnsType<QuotationReportTable> = [
   },
   {
     title: "Placa",
-    dataIndex: "vehiclePlate",
-    key: "vehiclePlate",
+    dataIndex: "placa",
+    key: "placa",
     align: "center",
     render: (plate) => (
       <label style={{ fontFamily: "monospace", fontWeight: "600" }}>
@@ -63,22 +63,22 @@ export const columns: ColumnsType<QuotationReportTable> = [
   },
   {
     title: "Marca",
-    dataIndex: "vehicleBrand",
-    key: "vehicleBrand",
+    dataIndex: "marca",
+    key: "marca",
     align: "center",
   },
   {
     title: "Cliente",
-    dataIndex: "customerName",
-    key: "customerName",
+    dataIndex: "cliente",
+    key: "cliente",
     align: "center",
   },
   {
     title: "Hora de Entrada",
-    dataIndex: "entryTime",
-    key: "entryTime",
+    dataIndex: "horaEntrada",
+    key: "horaEntrada",
     align: "center",
-    render: (entryTime: string) => {
+    /*render: (entryTime: string) => {
       const formatTime = (dateTime: string) => {
         const date = new Date(dateTime);
         return date
@@ -91,12 +91,12 @@ export const columns: ColumnsType<QuotationReportTable> = [
       };
 
       return formatTime(entryTime);
-    },
+    },*/
   },
   {
     title: "Prioridad",
-    dataIndex: "priority",
-    key: "priority",
+    dataIndex: "prioridad",
+    key: "prioridad",
     align: "center",
     render: (priority: string) => {
       const getPriorityColor = (prio: string) => {
@@ -133,9 +133,9 @@ export const columns: ColumnsType<QuotationReportTable> = [
         Cerrada
       </div>
     ),
-    dataIndex: "quotationStatus",
-    key: "quotationStatus",
-    render: (status: string) => {
+    dataIndex: "cotizacionCerrada",
+    key: "cotizacionCerrada",
+    render: (status: boolean) => {
       return (
         <div style={{ display: "flex", alignItems: "center", justifyContent:"center" }}>
         <span
@@ -145,7 +145,7 @@ export const columns: ColumnsType<QuotationReportTable> = [
             justifyContent: "center",
             width: "50px",
             height: "50px",
-            backgroundColor:status.toLowerCase() === "cerrada" ? "#1FC16B1A" : "#EC01271A",
+            backgroundColor:status ? "#1FC16B1A" : "#EC01271A",
             borderRadius: "50%",
           }}
         >
@@ -163,10 +163,10 @@ export const columns: ColumnsType<QuotationReportTable> = [
         Facturada
       </div>
     ),
-    dataIndex: "invoiceNumber",
-    key: "invoiceNumber",
+    dataIndex: "cotizacionFacturada",
+    key: "cotizacionFacturada",
     align: "center",
-    render: (status: string) => {
+    render: (status: boolean) => {
       return (
         <div style={{ display: "flex", alignItems: "center", justifyContent:"center" }}>
           <span
@@ -177,7 +177,7 @@ export const columns: ColumnsType<QuotationReportTable> = [
               width: "50px",
               height: "50px",
               backgroundColor:
-                status.toLowerCase() === "cerrada" ? "#1FC16B1A" : "#EC01271A", // fondo suave según estado
+                status ? "#1FC16B1A" : "#EC01271A", // fondo suave según estado
               borderRadius: "50%",
             }}
           >

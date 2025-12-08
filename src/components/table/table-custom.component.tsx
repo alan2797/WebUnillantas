@@ -60,6 +60,22 @@ export const TableCustom = <T extends { [key: string]: any }>({
   const isLoading = !dataSource;
   const skeletonRows = Array.from({ length: 3 }, (_, i) => ({ id: `skeleton-${i}` })) as unknown as T[];
 
+ // Función para obtener el key de un registro
+  const getRowKey = useMemo(() => {
+    if (typeof rowKey === 'function') {
+      return rowKey;
+    }
+    return (record: T) => {
+      const key = record[rowKey || 'key'] || record['id'] || record['key'];
+      if (!key) {
+        console.warn('Registro sin key:', record);
+        // Generar un key único como fallback
+        return `row-${Math.random().toString(36).substr(2, 9)}`;
+      }
+      return key;
+    };
+  }, [rowKey]);
+
   const startEditing = (key: React.Key, field: string, currentValue: any) => {
     setEditingKey(key);
     setEditingField(field);
@@ -96,7 +112,7 @@ export const TableCustom = <T extends { [key: string]: any }>({
         return {
           ...col,
           render: (value: any, record: T, index: number) => {
-            const key = record[rowKey];
+            const key = getRowKey(record);
             const isEditing = editingKey === key && editingField === dataIndex;
 
             if (isEditing) {
@@ -256,7 +272,7 @@ export const TableCustom = <T extends { [key: string]: any }>({
     };
 
     return [...processedColumns, actionColumn];
-  }, [columns, editableColumns, editingKey, editingField, editingValue, onSaveEdit, rowKey, dataSource]);
+  }, [columns, editableColumns, editingKey, editingField, editingValue, onSaveEdit, getRowKey, dataSource]);
 
   const handlePageSizeChange = (size: number) => {
     setCurrentPageSize(size);
@@ -292,7 +308,7 @@ export const TableCustom = <T extends { [key: string]: any }>({
         onChange: (keys: any) => setSelectedRowKeys(keys),
       }
     : undefined;
-
+      console.log(rowKey);
   return (
     <div>
       {/* ... tu JSX existente para controles */}
@@ -355,7 +371,7 @@ export const TableCustom = <T extends { [key: string]: any }>({
         } : false}
         scroll={{ x: "max-content",y: scrollY || undefined}}
         rowSelection={rowSelection}
-        rowKey={rowKey}
+        rowKey={getRowKey}
         
       />
     </div>

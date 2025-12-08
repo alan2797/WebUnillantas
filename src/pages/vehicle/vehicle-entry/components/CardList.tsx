@@ -24,6 +24,7 @@ export interface IngresoCardProps {
   tipo: 'FINALIZADO' | 'CANCELADO' | 'EN_PISTA' | string;
   imagen?: string;
   marca?: string;
+  anio?: number;
   onVerHistorial?: () => void;
 }
 
@@ -37,12 +38,12 @@ export const CardList: React.FC<IngresoCardProps> = ({
   color,
   tipo,
   marca,
+  anio,
   onVerHistorial
 }) => {
   return (
     <Card 
-      className="ingreso-card"
-      style={{ marginBottom: 16 }}
+      className="ingreso-card mb-0"
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {horaIngreso && (
@@ -51,9 +52,9 @@ export const CardList: React.FC<IngresoCardProps> = ({
             <div style={{ fontSize: 12, color: '#888' }}>{horaIngreso}</div>
           </div>
         )}
-        <div style={{ flex: 1, marginLeft: 24 }}>
+        <div className='nombre-container'>
           <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-start" }}>
-            <h3 style={{ margin: 0, marginBottom: 8}}>{nombre}</h3>
+            <h3 style={{ margin: 0, marginBottom: 8}} >{nombre}</h3>
             <div style={{ width: "100%" }}>
               <Divider style={{ margin: "8px 0", borderTopWidth:2}} />
             </div>
@@ -69,6 +70,8 @@ export const CardList: React.FC<IngresoCardProps> = ({
             <span>{placa}</span>
             <span>|</span>
             <span>{modelo}</span>
+            <span>|</span>
+            <span>{anio}</span>
             <span>|</span>
             <span>{color}</span>
           </div>

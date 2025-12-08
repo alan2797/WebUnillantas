@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../../FUDEM/FRONT/web-fudem"
+		},
+		{
+			"path": "../../../FUDEM/BACKEND/v2/APIFudem"
 		}
 	],
 	"settings": {}

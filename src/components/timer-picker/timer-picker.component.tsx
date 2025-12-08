@@ -13,8 +13,8 @@ const TimePickerCustom = <TFormValues extends Record<string, any>>({
     label,
     placeholder = "Seleccionar hora",
     disabled = false,
-    use12Hour=true,
-    format = "HH:mm A",
+    use12Hour= true,
+    format = "hh:mm A",
   } = fieldConfig;
 
   return (

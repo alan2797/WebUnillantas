@@ -11,6 +11,9 @@ import type { VehicleEntryFilter, VehicleEntryResponseDto } from '../../../inter
 import { handleRequestAxios } from '../../../utils/handle-request-axios';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../redux/store';
+import ButtonCustom from '../../../components/button/button.component';
+import { IconClockDown, IconClockUp, IconFilter2, IconSortAscendingLetters, IconSortDescendingLetters } from '@tabler/icons-react';
+import type { MenuProps } from 'antd/lib';
 
 
 const VehicleEntry: React.FC = () => {
@@ -71,7 +74,46 @@ const VehicleEntry: React.FC = () => {
   </div>
   );
 
-   useEffect(() => {
+  const items: MenuProps['items'] = [
+    {
+      label: (
+        <a rel="noopener noreferrer" style={{textDecoration:"none"}}>
+          <IconClockUp style={{marginRight: 8}}/>
+          De más reciente a más antiguo
+        </a>
+      ),
+      key: '0',
+    },
+    {
+      label: (
+        <a  rel="noopener noreferrer" style={{textDecoration:"none"}}>
+          <IconClockDown style={{marginRight: 8}}/>
+          De más antiguo a más reciente
+        </a>
+      ),
+      key: '1',
+    },
+    {
+      label: (
+        <a  rel="noopener noreferrer" style={{textDecoration:"none"}}>
+          <IconSortAscendingLetters style={{marginRight: 8}}/>
+          Alfabeto Ascendente
+        </a>
+      ),
+      key: '2',
+    },
+    {
+      label: (
+        <a  rel="noopener noreferrer" style={{textDecoration:"none"}}>
+          <IconSortDescendingLetters style={{marginRight: 8}}/>
+          Alfabeto Descendente
+        </a>
+      ),
+      key: '3',
+    },
+  ];
+
+  useEffect(() => {
     getAllVehicleEntries();
   }, []);
 
@@ -94,7 +136,7 @@ const VehicleEntry: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className='p-0 p-md-3 p-lg-5'>
       <Row  style={{ marginBottom: 16 }}>
         <Col span={24}>
           <Button 
@@ -121,6 +163,22 @@ const VehicleEntry: React.FC = () => {
             </Space>
             </Button>
         </Dropdown>
+        <div className='ms-2' style={{marginTop: -4}}>
+          <Dropdown menu={{ items }} trigger={["click"]} placement="bottomRight">
+            <a onClick={(e) => e.preventDefault()} style={{textDecoration:"none"}}>
+              <ButtonCustom
+                  icon={<IconFilter2 />}
+                  style={{
+                      backgroundColor: "black",
+                      color: "white",
+                      border: "none",
+                      marginRight: 10
+                  }}
+              />
+            </a>
+          </Dropdown>
+        </div>
+        
       </Row>
       <Row gutter={[16, 16]}>
         {datasource?.map((ingreso) => (
@@ -134,6 +192,7 @@ const VehicleEntry: React.FC = () => {
               marca={ingreso.vehiculo.marca}
               modelo={ingreso.vehiculo.modelo}
               color={ingreso.vehiculo.color}
+              anio={ingreso.vehiculo.anio}
               tipo={ingreso.estado}
               onVerHistorial={() => handleVerHistorial(ingreso.entryId)}
             />

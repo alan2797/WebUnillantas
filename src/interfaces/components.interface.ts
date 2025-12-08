@@ -110,6 +110,7 @@ export interface FieldConfig<T extends Record<string, unknown> = Record<string, 
   displayMode?:"text" | "image" | "color"; // para los checkGroup
   direction?: "horizontal" | "vertical";
   styleContainer?: CSSProperties;
+  onBlur?: (value: any) => void;
 
 }
 
